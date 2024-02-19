@@ -36,11 +36,11 @@ public class UserController {
         log.info("@# UserType ==>"+user.getType());
         if(user.getType().equals("user")){
         Role role = new Role();
-        role.setId(1L);
+        role.setId(1L); // ROLE_USER
         user.getRoles().add(role);
         } else if(user.getType().equals("owner")){
             Role role = new Role();
-            role.setId(2L);
+            role.setId(2L); // ROLE_OWNER
             user.getRoles().add(role);
         }
         userService.save(user);
