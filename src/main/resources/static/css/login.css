@@ -46,8 +46,8 @@ a {
 
 button {
     border-radius: 20px;
-    border: 1px solid #FF4B2B;
-    background-color: #FF4B2B;
+    /*border: 1px solid #0A82FF;*/
+    /*background-color: #0A82FF;*/
     color: #FFFFFF;
     font-size: 12px;
     font-weight: bold;
@@ -108,24 +108,24 @@ input {
     transition: all 0.6s ease-in-out;
 }
 
-.sign-in-container {
+.user-container {
     left: 0;
     width: 50%;
     z-index: 2;
 }
 
-.container.right-panel-active .sign-in-container {
+.container.right-panel-active .owner-container {
     transform: translateX(100%);
 }
 
-.sign-up-container {
+.owner-container {
     left: 0;
     width: 50%;
     opacity: 0;
     z-index: 1;
 }
 
-.container.right-panel-active .sign-up-container {
+.container.right-panel-active .owner-container {
     transform: translateX(100%);
     opacity: 1;
     z-index: 5;
@@ -160,9 +160,9 @@ input {
 }
 
 .overlay {
-    background: #FF416C;
-    background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
-    background: linear-gradient(to right, #FF4B2B, #FF416C);
+    background: #0A82FF;
+    background: -webkit-linear-gradient(to right, #0A82FF, #0A82FF);
+    background: linear-gradient(to right, #0A82FF, #0A82FF);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: 0 0;
@@ -193,8 +193,19 @@ input {
     transform: translateX(0);
     transition: transform 0.6s ease-in-out;
 }
+.owner-regist,#owner-btn{
+    background: #FF416C;
+    background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
+    background: linear-gradient(to right, #FF4B2B, #FF416C);
+}
+.user-regist,#user-btn{
+    background: #0A82FF;
 
+}
 .overlay-left {
+  background: #FF416C;
+  background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
+  background: linear-gradient(to right, #FF4B2B, #FF416C);
     transform: translateX(-20%);
 }
 

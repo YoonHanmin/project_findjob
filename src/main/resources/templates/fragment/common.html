@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/header.css">
+    <link href="css/sidebar.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/82c57657fe.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+
+<body>
+<header class="p-3 mb-3 border-bottom" th:fragment="menu(v_menu)">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link" th:classappend="${v_menu eq 'home'} ? 'active'">HOME</a></li>
+                <li><a href="#" class="nav-link" th:classappend="${v_menu eq 'find'}?'active'">알바찾기</a></li>
+                <li><a href="#" class="nav-link" th:classappend="${v_menu eq 'apply'}?'active'">지원현황</a></li>
+                <li><a href="#" class="nav-link" th:classappend="${v_menu eq 'msg'}?'active'">메시지</a></li>
+            </ul>
+
+<!--            권한이 있으면 -->
+            <div class="dropdown text-end" sec:authorize="hasRole('ROLE_ADMIN')">
+                <span class="text-white" sec:authentication="name">사용자</span>
+                <span class="text-white" sec:authentication="principal.authorities">권한</span>
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small">
+                    <li><a class="dropdown-item" href="#">내정보</a></li>
+                    <li><a class="dropdown-item" href="#">프로필</a></li>
+                    <li><a class="dropdown-item" href="#">설정</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/logout">로그아웃</a></li>
+                </ul>
+            </div>
+<!--            권한이 없으면 -->
+            <div class="dropdown text-end" sec:authorize="isAuthenticated()">
+               <button type="button" class="btn btn-primary">로그인하기</button>
+            </div>
+        </div>
+    </div>
+</header>
+</body>
+</html>
