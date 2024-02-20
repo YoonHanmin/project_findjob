@@ -3,6 +3,25 @@
 <head th:replace="~{fragment/common :: head}">
 
 </head>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // JWT 토큰을 로컬 스토리지에서 가져옵니다.
+    var token = localStorage.getItem('jwtToken');
+
+    // AJAX 요청을 보낼 URL을 지정합니다.
+    var url = '/main';
+
+    // AJAX 요청을 생성합니다.
+    var xhr = new XMLHttpRequest();
+
+    // 요청 헤더에 토큰을 추가합니다.
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+
+    // 요청을 보냅니다.
+    xhr.open('GET', url, true);
+    xhr.send();
+    /*]]>*/
+</script>
 <body>
 <header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
 
