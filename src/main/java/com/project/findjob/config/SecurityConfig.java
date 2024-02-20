@@ -29,13 +29,15 @@ public class SecurityConfig {
                 .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/css/**","/image/**","/regist/**","/js/**").permitAll() // 다음 url은 인증없이 모든 사용자에게 허용
+                        .requestMatchers("/user/**").hasAuthority("ROLE_USER")
+                        .requestMatchers("/owner/**").hasAuthority("ROLE_OWNER")
                         .anyRequest().authenticated() // 그 이외의 모든 요청은 인증 필요함
                 )
 //                허가되지않은 경우 -> /login으로 이동
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .permitAll()
-                        .defaultSuccessUrl("/main_user")
+                        .defaultSuccessUrl("/main")
 
 
                 )

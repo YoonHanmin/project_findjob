@@ -28,16 +28,14 @@ public class ViewController {
         log.info("@# login()");
         return "/user/regist";
     }
-    @GetMapping("/regg")
-    public String regis(){
-        log.info("@# login()");
-        return "/user/regg";
-    }
-    @GetMapping("/main_user")
-    public String mainuser(){
 
-
-        return "main_user";
+    @GetMapping("/main")
+    public String main(){
+        return "main";
+           }
+    @GetMapping("/user/profile")
+    public String profile(){
+        return "user/profile";
            }
 
     @GetMapping("/main_owner")

@@ -7,12 +7,9 @@
 <header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
 
 </header>
-
-<div class="container text-center">
-    <div class="row">
-        <div class="col">사장님</div>
-        <div class="col">알바님</div>
-    </div>
-</div>
+<th:block sec:authorize="hasAuthority('ROLE_OWNER')">
+<main  th:replace="~{fragment/common :: owner-nav}">
+</main>
+</th:block>
 </body>
 </html>

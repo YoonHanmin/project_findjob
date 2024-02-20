@@ -3,11 +3,17 @@ package com.project.findjob.service;
 import com.project.findjob.model.User;
 import com.project.findjob.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -19,7 +25,30 @@ public class UserService {
     public User save(User user){
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
-
-
     }
+
+    public void uploadProfile(MultipartFile uploadFile,String filename){
+        String uploadFolder = "D:\\dev\\ProjectUpload\\profile";
+        String oriname = uploadFile.getOriginalFilename();
+//				파일명에서 확장자 제거
+        String[] parts = oriname.split("\\.");
+
+//				확장자 제거한 파일명
+        String uploadFilename = parts[0];
+//		        확장자
+        String ext = parts[1];
+        String saveFileName = filename.trim();
+        filename = saveFileName+"."+ext;
+        log.info(filename);
+        File saveFile = new File(uploadFolder,filename);
+
+        try{
+//					transferTo : savaFile 내용을 저장
+            uploadFile.transferTo(saveFile);
+
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
