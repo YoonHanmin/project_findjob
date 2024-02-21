@@ -38,9 +38,9 @@ dependencies {
 //    유효성검사
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 // JWT
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
 //    apache commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.12.0'

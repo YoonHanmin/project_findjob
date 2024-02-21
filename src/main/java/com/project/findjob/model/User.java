@@ -42,8 +42,8 @@ public class User implements UserDetails {
     private Boolean enabled;
 
     // Resume 엔티티와의 One-to-Many 관계 매핑
-    @OneToMany(mappedBy = "user")
-    private List<Resume> resumes;
+//    @OneToMany(mappedBy = "user")
+//    private List<Resume> resumes;
 
     @ManyToMany
     @JoinTable(

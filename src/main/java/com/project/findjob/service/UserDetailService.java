@@ -16,6 +16,8 @@ import java.util.Optional;
 @Slf4j
 public class UserDetailService implements UserDetailsService {
 //    RequiredArgs~ : 생성자 주입 방식
+private final UserRepository userRepository;
+
 @Override
 @Transactional // Transactional : roles 테이블이 지연로딩되므로 영속성컨텍스트 문제를 해결하기위해 트랜젝션 처리
 public User loadUserByUsername(String userid) throws UsernameNotFoundException {
@@ -31,6 +33,4 @@ public User loadUserByUsername(String userid) throws UsernameNotFoundException {
 
     return user;
 }
-
-    private final UserRepository userRepository;
 }
