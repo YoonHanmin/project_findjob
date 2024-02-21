@@ -1,7 +1,11 @@
 package com.project.findjob.controller;
 
+import com.project.findjob.model.Job;
+import com.project.findjob.model.Resume;
 import com.project.findjob.model.Role;
 import com.project.findjob.model.User;
+import com.project.findjob.repository.JobRepository;
+import com.project.findjob.repository.ResumeRepository;
 import com.project.findjob.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,13 +24,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
 @Controller
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
+    private final ResumeRepository resumeRepository;
+    private final JobRepository jobRepository;
 
     // 아이디 중복확인
     @GetMapping("/regist/exists/{userid}")
@@ -61,8 +69,38 @@ public class UserController {
         log.info("@@# getName() ==>"+auth.getName());
         String filename = auth.getName();
         userService.uploadProfile(file,filename);
+
         return "redirect:/user/profile";
     }
+//    프로필 수정
+    @PostMapping("/user/profile")
+    @Transactional
+    public String update(@RequestParam("job") List<Long>jobs, Resume resume){
+        log.info("@#넘어온 job 값1 ==>"+jobs.get(0));
+
+        if(resumeRepository.existsByUserid(resume.getUserid())) { // 기존에 resume이 있으면 삭제하고 새로삽입
+            resumeRepository.deleteByUserid(resume.getUserid());
+        }
+
+//    넘어온 job값을 resume의 jobs에 할당
+            for (Long jobid : jobs) {
+                Job job = jobRepository.findById(jobid).orElse(null);
+                resume.getJobs().add(job);
+            }
+            resumeRepository.save(resume);
+
+            log.info("@# update_resume의 jobs ==>" + resume.getJobs());
+
+        return "redirect:/main";
+    }
+//    내 프로필 보기
+    @GetMapping("/user/profile/{userid}")
+    public String myProfile(@PathVariable("userid") String id, Model model){
+        Resume resume = resumeRepository.findByUserid(id);
+        model.addAttribute("resume",resume);
+        return "/user/profile";
+    }
+
     @GetMapping("/main/{profileurl}")
     @ResponseBody
     public ResponseEntity<byte[]> getFile(@PathVariable("profileurl") String profileurl){

@@ -29,7 +29,8 @@ public User loadUserByUsername(String userid) throws UsernameNotFoundException {
     }
     User user = userOptional.get();
     log.info("@#@ user는" + user.getUserid());
-    log.info("@#@ user가 가진 권한정보는" + user.getRoles());
+    log.info("@#@ user가 가진 권한정보는" + user.getRoles().get(0));
+
 
     return user;
 }

@@ -12,17 +12,15 @@ public class Resume {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String profileImg;
+    @Column(name="profileImg")
+    private String profile_img;
+    @Column(name = "userid")
+    private String userid;
     private String education;
     private String degree;
     private Double score;
     private String personality;
     private String liketime;
-
-
-    @ManyToOne
-    @JoinColumn(name = "user_id") // 외래 키 이름 지정
-    private User user;
 
     @ManyToMany
     @JoinTable(

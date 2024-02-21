@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragment/common :: head}">
+
+</head>
+
+<script>
+    $(document).ready(function () {
+        $(".to-add").on("click",function (){
+            $(".popup_bg").css({"display":"block"});
+            $(".popup-search").css({"display":"block"});
+
+        });
+        $(".to-add-iam").on("click",function (){
+            $(".popup_bg").css({"display":"block"});
+            $(".popup-iam").css({"display":"block"});
+
+        });
+
+        $("#change-profile").on("click",function (){
+            $(".popup_bg").css({"display":"block"});
+            $(".popup-profile").css({"display":"block"});
+
+        });
+
+
+        $("#popup-search-out").on("click", function () {
+            $(".popup_bg").css({"display":"none"});
+            $(".popup-search").css({"display": "none"});
+        });
+        $("#popup-iam-out").on("click", function () {
+            $(".popup_bg").css({"display":"none"});
+            $(".popup-iam").css({"display": "none"});
+        });
+        $("#popup-profile-out").on("click", function () {
+            $(".popup_bg").css({"display":"none"});
+            $(".popup-profile").css({"display": "none"});
+        });
+
+        $('input[type=file]').change(function () {
+
+            showPreview(this);
+
+        });
+
+        $("#profile-btn").click(function(event) {
+            event.preventDefault(); // 기본 제출 동작 방지
+            if (confirm("프로필을 설정하시겠습니까?")) {
+                $("#profile-form").submit(); // 폼 제출
+            }
+        });
+
+        $("#profile-form").submit(function() {
+            alert("프로필 설정이 완료되었습니다!");
+        });
+    });
+    function liketime(){
+        let selectedTimes = $("#mon").val() + "," +
+            $("#tue").val() + "," +
+            $("#wed").val() + "," +
+            $("#thu").val() + "," +
+            $("#fri").val() + "," +
+            $("#sat").val() + "," +
+            $("#sun").val();
+
+
+        let str = selectedTimes.replace(/1/g, "오전").replace(/2/g, "오후").replace(/3/g, "야간").replace(/4/g,"협의").replace(/all/,"전체");
+        console.log(str);
+        const time = str.split(',');
+
+
+        console.log(selectedTimes);
+        $("input[name='liketime']").val(selectedTimes);
+
+        // $("#showtime").text("월-"+time[0]+"  화-"+time[1]+"  수-"+time[2]+"  목-"+time[3]+"  금-"+time[4]+"  토-"+time[5]+"  일-"+time[6]);
+        // 'showtime' 요소를 비우고, 'time' 배열의 각 요소에 대해 <span>을 생성하여 추가합니다.
+        $("#showtime").empty();
+        time.forEach(function(item, index) {
+            const dayLabels = ["월", "화", "수", "목", "금", "토", "일"];
+            const span = $("<span>").attr("id", "showtime").html(dayLabels[index] + "-" + item);
+            $("#showtime-box").append(span);
+        });
+
+        $(".popup_bg").css({"display":"none"});
+        $(".popup-search").css({"display": "none"});
+
+    }
+    function showPreview(input) {
+        if (input.files && input.files[0]) {
+
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('.profile-photo').attr('src', e.target.result);
+            }
+
+
+
+        } // end of 파일확장자 유효성 검사
+        reader.readAsDataURL(input.files[0]);
+    }
+    function introduce(){
+
+        // 선택된 체크박스의 값을 저장할 배열을 초기화합니다.
+        const selectedValues = [];
+
+        // 체크된 체크박스 요소를 선택하고 각 요소의 값을 배열에 추가합니다.
+        $('input[name="iam"]:checked').each(function() {
+            selectedValues.push($(this).val());
+        });
+
+        // 선택된 값들을 콘솔에 출력합니다.
+        console.log(selectedValues);
+        const str = selectedValues.join(',');
+
+
+        selectedValues.forEach(function(item, index) {
+
+            const addspan = $("<span>").attr("id", "intro").html(item);
+            $("#intro-box").append(addspan);
+        });
+        $("#introduce").val(str);
+        $(".popup_bg").css({"display":"none"});
+        $(".popup-iam").css({"display": "none"});
+    }
+</script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+    body{
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+    .profile-box{
+        padding: 10px;
+        margin-left: 20%;
+        margin-right: 30%;
+        width: 60%;
+        height: 50%;
+        margin-top: 50px;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        background: white;
+    }
+    #name{
+        font-size: 30px;
+        font-weight: bold;
+
+    }
+    .job{
+        border : 1px solid #e5c7ca;
+        border-radius: 6px;
+        color : black;
+        background-color: white;
+        margin-top : 30px;
+        font-weight : bold;
+        height:100px ;
+        width: 200px;
+        cursor: pointer;
+    }
+    .to-add{
+        border : 1px solid #84c1ff;
+        border-radius: 6px;
+        color : black;
+        background-color: #84c1ff;
+        margin-top : 30px;
+        font-weight : bold;
+        height:80px ;
+        width: 120px;
+        cursor: pointer;
+    }
+    .to-add-iam{
+        border : 1px solid #84c1ff;
+        border-radius: 6px;
+        color : black;
+        background-color: #84c1ff;
+        margin-top : 30px;
+        font-weight : bold;
+        height:80px ;
+        width: 120px;
+        cursor: pointer;
+    }
+    #showtime{
+        border : 1px solid #ffcd39;
+        border-radius: 6px;
+        margin-right: 5px;
+        color : black;
+        background-color:#ffcd39;
+        margin-top : 30px;
+
+        height:80px ;
+        width: 300px;
+        cursor: pointer;
+    }
+    #intro{
+        margin-right: 5px;
+        border : 1px solid #E6E6FA;
+        border-radius: 6px;
+        color : black;
+        background-color:#E6E6FA;
+        margin-top : 30px;
+
+        height:80px ;
+        width: 300px;
+        cursor: pointer;
+    }
+
+    .popup_bg{
+        position: absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background: rgba(0,0,0,0.7);
+        display:none;
+        z-index: 1; /* z-index 값 설정 */
+    }
+    .popup-search{
+        position : absolute;
+        left : calc(50% - 300px);
+        top : calc(50% - 300px);
+        width : 450px;
+        height : 300px;
+        background : white;
+        display:none;
+        border-radius: 8px;
+        z-index: 2; /* z-index 값 설정 (팝업은 배경 팝업보다 위에 있어야 함) */
+    }
+    .popup-search > #popup-search-out{
+        font-size: 2rem;
+        float: right;
+        margin-right:5px;
+        cursor: pointer;
+    }
+    .popup-iam{
+        position : absolute;
+        left : calc(50% - 300px);
+        top : calc(50% - 300px);
+        width : 450px;
+        height : 300px;
+        background : white;
+        display:none;
+        border-radius: 8px;
+        padding: 5px;
+        z-index: 2; /* z-index 값 설정 (팝업은 배경 팝업보다 위에 있어야 함) */
+    }
+    .popup-iam > #popup-iam-out{
+        font-size: 2rem;
+        float: right;
+        margin-right:5px;
+        cursor: pointer;
+    }
+    .popup-profile > #popup-profile-out{
+        font-size: 2rem;
+        float: right;
+        margin-right:5px;
+        cursor: pointer;
+    }
+    .popup-profile{
+        position : absolute;
+        left : calc(50% - 300px);
+        top : calc(50% - 300px);
+        width : 450px;
+        height : 300px;
+        background : white;
+        display:none;
+        border-radius: 8px;
+        z-index: 2; /* z-index 값 설정 (팝업은 배경 팝업보다 위에 있어야 함) */
+    }
+    .want-time{
+        width: 450px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 5px;
+    }
+    .want-time select{
+        width : 150px;
+    }
+</style>
+<body>
+<header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
+</header>
+<main>
+    <div class="container">
+        <div style="margin-top: 30px; border-bottom: 1px solid #eee">
+        <h1> 내 프로필 보기</h1>
+        </div>
+        <div class="profile-box">
+        <div class="row" style="">
+            <div class="col-4 justify-content-center" style="background-color: white;">
+              <div style="padding: 5px; margin-left: 20px; margin-bottom: 10px;">
+                  <img th:src="@{'/main/' + ${#authentication.getPrincipal().getProfileurl()}}"  width="150px" height="150px" style="border-radius:5px;">
+              </div>
+            </div>
+            <div class="col-8 justify-content-center" style="background-color:white;">
+               <div style="margin-top:20px;"id="name" th:text="${#authentication.getPrincipal().getUname()}">이름</div>
+               <div id="age">
+                   <span th:if="${#authentication.getPrincipal().getGender() == 'F'}">
+                 <i class="fa-solid fa-user" style="color: hotpink;"></i>
+                   </span>
+                     <span th:if="${#authentication.getPrincipal().getGender() == 'M'}">
+                     <i class="fa-solid fa-user" style="color: blue;"></i>
+                     </span>
+                   <span th:text="${#authentication.getPrincipal().getBirthday()}">
+
+                    </span>
+                   <span th:if="${#authentication.getPrincipal().getGender() == 'M'}">남성</span>
+                   <span th:if="${#authentication.getPrincipal().getGender() == 'F'}">여성</span>
+               </div>
+               <div id="loc" th:inline="text" >
+                   <i class="fa-solid fa-location-dot" style="color:green;"></i>
+                   [[${#authentication.getPrincipal().getAddress()}]]
+               </div>
+               <div id="phone" th:inline="text" >
+                   <i class="fa-solid fa-phone" style="color:cornflowerblue;"></i>
+                   [[${#authentication.getPrincipal().getPhone()}]]
+               </div>
+
+
+            </div>
+
+        </div>
+            <div class="row">
+                <div class="col-4" style="background-color: white;">
+                    <button type="button" id="change-profile">프로필 변경하기</button>
+                </div>
+                <div class="col-8" style="background-color: white;">
+
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <br>
+                </div>
+            </div>
+            <form method="post" action="/user/profile" id="profile-form">
+        <div class="row" style="" >
+            <div class="col-4">
+                <br>
+                <h3><i class="fa-solid fa-heart" style="color:deeppink;"></i>희망업무</h3>
+            </div>
+            <div class="col-8 d-flex flex-wrap" id="jobtype">
+
+                <input type="checkbox" name="job" class="btn-check" id="1" value="1" autocomplete="off">
+                <label class="btn btn-outline-primary" for="1">주방</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="2" value="2" autocomplete="off">
+                <label class="btn btn-outline-primary" for="2">서빙</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="3" value="3" autocomplete="off">
+                <label class="btn btn-outline-primary" for="3">카운터</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="4" value="4" autocomplete="off">
+                <label class="btn btn-outline-primary" for="4">단순노무</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="5" value="5" autocomplete="off">
+                <label class="btn btn-outline-primary" for="5">서비스업</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="6" value="6" autocomplete="off">
+                <label class="btn btn-outline-primary" for="6">건설·공사</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="7" value="7" autocomplete="off">
+                <label class="btn btn-outline-primary" for="7">물류</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="8" value="8" autocomplete="off">
+                <label class="btn btn-outline-primary" for="8">행사·홍보</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="9" value="9" autocomplete="off">
+                <label class="btn btn-outline-primary" for="9">조립·생산</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="10" value="10" autocomplete="off">
+                <label class="btn btn-outline-primary" for="10">배송·운전</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="11" value="11" autocomplete="off">
+                <label class="btn btn-outline-primary" for="11">사무·관리</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="12" value="12" autocomplete="off">
+                <label class="btn btn-outline-primary" for="12">프로젝트</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="13" value="13" autocomplete="off">
+                <label class="btn btn-outline-primary" for="13">프리랜서</label><br>
+                <input type="checkbox" name="job" class="btn-check" id="14" value="14" autocomplete="off">
+                <label class="btn btn-outline-primary" for="14">기타</label><br>
+
+            </div>
+        </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <br>
+                    <h3><i class="fa-regular fa-clock"></i>희망시간대</h3>
+                </div>
+                <div class="col-8">
+                    <br>
+                        <div id="showtime-box"></div>
+
+                        <input type="hidden" name="liketime" id="liketime">
+                            <span class="to-add" style="margin-left : 10px;">추가</span>
+
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <br>
+                    <h3><i class="fa-regular fa-face-laugh" style="color:dodgerblue;"></i>자기소개</h3>
+                </div>
+                <div class="col-8">
+                    <br>
+                    <div id="intro-box"></div>
+                    <input type="hidden" name="personality" id="introduce">
+                    <span class="to-add-iam" style="margin-left : 10px;">추가</span>
+                </div>
+            </div>
+                <div>
+                    <br>
+                    <input name="userid" type="hidden" th:value="${#authentication.getPrincipal().getUserid()}">
+                    <input name="profile_img" type="hidden" th:value="${#authentication.getPrincipal().getProfileurl()}">
+                    <input type="submit" value="내 프로필 설정하기" id="profile-btn">
+                </div>
+            </form>
+        </div> <!--end of profile-box -->
+    </div>
+
+
+</main>
+
+<div class="popup-search">
+    <i class="fa-solid fa-x" id="popup-search-out"></i>
+    <div style="margin-bottom: 30px; padding: 5px;">
+    <h3>희망시간대를 선택하세요.</h3>
+    </div>
+    <div class="want-time">
+
+
+        <label for="mon"><b>월요일 : </b></label>
+        <select class="form-select" name="mon" id="mon">
+            <option value="1">오전 9~12시</option>
+            <option value="2">오후 12~18시</option>
+            <option value="3">저녁 18~24시</option>
+            <option value="4">협의가능</option>
+        </select><br>
+
+        <label for="tue"><b>화요일 : </b></label>
+        <select class="form-select" name="tue" id="tue">
+            <option value="1">오전 9~12시</option>
+            <option value="2">오후 12~18시</option>
+            <option value="3">저녁 18~24시</option>
+            <option value="4">협의가능</option>
+        </select><br>
+        <label for="wed"><b>수요일 : </b></label>
+        <select class="form-select"  name="wed" id="wed">
+            <option value="1">오전 9~12시</option>
+            <option value="2">오후 12~18시</option>
+            <option value="3">저녁 18~24시</option>
+            <option value="4">협의가능</option>
+        </select><br>
+        <label for="thu"><b>목요일 : </b></label>
+        <select class="form-select"  name="thu" id="thu">
+            <option value="1">오전 9~12시</option>
+            <option value="2">오후 12~18시</option>
+            <option value="3">저녁 18~24시</option>
+            <option value="4">협의가능</option>
+        </select><br>
+        <label for="fri"><b>금요일 : </b></label>
+        <select class="form-select" name="fri" id="fri">
+            <option value="1">오전 9~12시</option>
+            <option value="2">오후 12~18시</option>
+            <option value="3">저녁 18~24시</option>
+            <option value="4">협의가능</option>
+        </select><br>
+        <label for="sat"><b>토요일 : </b></label>
+        <select class="form-select" name="sat" id="sat">
+            <option value="1">오전 9~12시</option>
+            <option value="2">오후 12~18시</option>
+            <option value="3">저녁 18~24시</option>
+            <option value="4">협의가능</option>
+        </select><br>
+        <label for="sun"><b>일요일 : </b></label>
+        <select class="form-select" name="sun" id="sun">
+            <option value="1">오전 9~12시</option>
+            <option value="2">오후 12~18시</option>
+            <option value="3">저녁 18~24시</option>
+            <option value="4">협의가능</option>
+        </select><br>
+
+        <div style="margin-top:10px;">
+        <button class="btn btn-primary" type="button" onclick="liketime()">선택하기</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="popup-profile">
+
+    <i class="fa-solid fa-x" id="popup-profile-out"></i>
+    <div class="profileImg">
+        <h3>프로필 사진 변경</h3>
+    </div>
+        <div class="profile" style="padding: 15px;">
+            <img src = "" class = "profile-photo" width="150px" height="150px" alt="프로필사진을 선택하세요.">
+        </div>
+
+    <div class="uploadDiv" style="padding: 15px;">
+        <form method="post" action="/user/profile/uplode" enctype="multipart/form-data">
+            <input type="file" name="uploadFile" multiple>
+
+            <input type="submit" value="변경하기">
+        </form>
+    </div>
+    <!-- 	<button type="button" id="uploadBtn" class="btn btn-primary btn-sm">변경하기</button> -->
+</div>
+
+<div class="popup-iam">
+    <i class="fa-solid fa-x" id="popup-iam-out"></i>
+    <h3>골라주세요!</h3>
+    <div class="d-flex flex-wrap">
+    <input type="checkbox" name="iam" class="btn-check" id="a" value="성실해요" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="a">성실해요</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="b" value="꼼꼼해요" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="b">꼼꼼해요</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="c" value="부지런해요" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="c">부지런해요</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="d" value="힘이좋아요" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="d">힘이좋아요</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="e" value="친절해요" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="e">친절해요</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="f" value="센스쟁이" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="f">센스쟁이</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="g" value="밝아요" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="g">밝아요</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="h" value="철두철미해요" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="h">철두철미해요</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="i" value="긍정왕!" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="i">긍정왕!</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="j" value="체력좋아요!" autocomplete="off">
+    <label class="btn btn-outline-secondary" for="j">체력좋아요!</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="k" value="융통성있어요" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="k">융통성있어요</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="l" value="친화력짱!" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="l">친화력짱!</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="m" value="재빨라요." autocomplete="off">
+        <label class="btn btn-outline-secondary" for="m">재빨라요.</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="n" value="자신감넘쳐요." autocomplete="off">
+        <label class="btn btn-outline-secondary" for="n">자신감넘쳐요.</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="o" value="시간약속 잘지켜요." autocomplete="off">
+        <label class="btn btn-outline-secondary" for="o">시간약속 잘지켜요.</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="p" value="적극적이에요" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="p">적극적이에요</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="q" value="지각안해요!" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="q">지각안해요!</label><br>
+    <input type="checkbox" name="iam" class="btn-check" id="r" value="배려를잘해요." autocomplete="off">
+        <label class="btn btn-outline-secondary" for="r">배려를잘해요.</label><br>
+   <div>
+        <button type="button" onclick="introduce()">선택하기</button>
+   </div>
+    </div>
+
+</div>
+<div class="popup_bg">
+
+</div>
+</body>
+
+</html>

@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="css/login.css">
-    <script src="https://kit.fontawesome.com/82c57657fe.js" crossorigin="anonymous"></script>
+
     <script src="/js/login.js"></script>
     <script src="/js/jquery-3.7.1.min.js"></script>
-
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script>
         $(document).ready(function (){
+
             $("#owner-btn").click(function() {
                 const id = $("#owner-form input[name='username']").val();
                 console.log("제출id =>"+id);
@@ -35,9 +36,7 @@
             <form id="owner-form" th:action="@{/login}" method="post">
                 <h1>로그인</h1>
                 <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+
                 </div>
                 <span>or use your account</span>
                 <input type="text" placeholder="ID" name="username" />
@@ -51,9 +50,7 @@
         <form id="user-form" action="/login" method="post">
             <h1>로그인</h1>
             <div class="social-container">
-                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+
             </div>
             <span>or use your account</span>
             <input type="text" placeholder="ID" name="username">
