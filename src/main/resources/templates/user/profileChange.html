@@ -104,10 +104,11 @@
 
         // 선택된 체크박스의 값을 저장할 배열을 초기화합니다.
         const selectedValues = [];
-
+        const showValues = [];
         // 체크된 체크박스 요소를 선택하고 각 요소의 값을 배열에 추가합니다.
         $('input[name="iam"]:checked').each(function() {
             selectedValues.push($(this).val());
+            showValues.push($(this).next('label').text());
         });
 
         // 선택된 값들을 콘솔에 출력합니다.
@@ -115,7 +116,7 @@
         const str = selectedValues.join(',');
 
 
-        selectedValues.forEach(function(item, index) {
+        showValues.forEach(function(item, index) {
 
             const addspan = $("<span>").attr("id", "intro").html(item);
             $("#intro-box").append(addspan);
@@ -493,7 +494,7 @@
         </div>
 
     <div class="uploadDiv" style="padding: 15px;">
-        <form method="post" action="/user/profile/uplode" enctype="multipart/form-data">
+        <form method="post" action="/user/profile/upload" enctype="multipart/form-data">
             <input type="file" name="uploadFile" multiple>
 
             <input type="submit" value="변경하기">
@@ -541,7 +542,7 @@
     <input type="checkbox" name="iam" class="btn-check" id="q" value="17" autocomplete="off">
         <label class="btn btn-outline-secondary" for="q">지각안해요!</label><br>
     <input type="checkbox" name="iam" class="btn-check" id="r" value="18" autocomplete="off">
-        <label class="btn btn-outline-secondary" for="r">배려를잘해요.</label><br>
+        <label class="btn btn-outline-secondary" for="r">손이빨라요</label><br>
    <div>
         <button type="button" onclick="introduce()">선택하기</button>
    </div>

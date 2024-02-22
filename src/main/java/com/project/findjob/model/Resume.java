@@ -12,7 +12,7 @@ public class Resume {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name="profileImg")
+
     private String profile_img;
     @Column(name = "userid")
     private String userid;

@@ -64,14 +64,14 @@ public class UserController {
     }
 
 //    프로필사진 업로드
-    @PostMapping("/user/profile/uplode")
+    @PostMapping("/user/profile/upload")
     public  String upload(@RequestParam("uploadFile") MultipartFile file){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         log.info("@@# getName() ==>"+auth.getName());
         String filename = auth.getName();
         userService.uploadProfile(file,filename);
 
-        return "redirect:/user/profile";
+        return "redirect:/main";
     }
 //    프로필 수정
     @PostMapping("/user/profile")
@@ -97,6 +97,7 @@ public class UserController {
             log.info("@# update_resume의 jobs ==>" + resume.getJobs());
             Optional<User> user = userRepository.findByUserid(resume.getUserid());
             User updateuser = user.get();
+            resume.setProfile_img(updateuser.getProfileurl());
             updateuser.setEnabled(true);
             userRepository.save(updateuser);
 
@@ -106,6 +107,7 @@ public class UserController {
     @GetMapping("/user/profile/{userid}")
     public String myProfile(@PathVariable("userid") String id, Model model){
         Resume resume = resumeRepository.findByUserid(id);
+        log.info("@# personalitys 1번 네임==>"+resume.getPersonalitys().get(0).getName());
         model.addAttribute("resume",resume);
         return "/user/profile";
     }

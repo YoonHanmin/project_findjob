@@ -41,7 +41,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-
+//   타임리프에서 Json 객체변환해주는 라이브러리
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
 //    apache commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.12.0'
 

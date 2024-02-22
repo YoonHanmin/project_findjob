@@ -60,15 +60,5 @@ public class ViewController {
     }
 
 
-    @GetMapping("/main_owner")
-    public String mainowener(){
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        log.info("@@# getName() ==>"+auth.getName());
-//        Optional<User> user = userRepository.findByUserid(auth.getName());
-//        User my = user.get();
-//        log.info("roles ==>"+my.getRoles());
-//        log.info("@#@# getAuthorise() ===> "+auth.getAuthorities());
 
-        return "main_owner";
-    }
 }

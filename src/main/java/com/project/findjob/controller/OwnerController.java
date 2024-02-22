@@ -96,7 +96,10 @@ public class OwnerController {
         }
         return result;
     }
-
+    @GetMapping("owner/store")
+    public String mystore(){
+        return "owner/storeChange";
+    }
     @GetMapping("/owner/addEmployment")
     public String addEmployment(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -108,12 +111,14 @@ public class OwnerController {
     }
 
     @PostMapping("/owner/addEmployment")
-    public String addEmploy(@RequestParam("personality") List<Long>personalitys,Employment employment){
+    public String addEmploy(@RequestParam("personality") List<Long> personalitys,Employment employment){
         //    넘어온 personality값을 resume의 jobs에 할당
         for (Long id : personalitys) {
           Optional<Personality> personalityOptional = personalityRepository.findById(id);
-
+            Personality personality = personalityOptional.get();
+            employment.getPersonalitys().add(personality);
         }
+        employRepository.save(employment);
         return "main";
     }
 
