@@ -1,11 +1,10 @@
 package com.project.findjob.controller;
 
-import com.project.findjob.model.Job;
-import com.project.findjob.model.Resume;
-import com.project.findjob.model.Role;
-import com.project.findjob.model.User;
+import com.project.findjob.model.*;
 import com.project.findjob.repository.JobRepository;
+import com.project.findjob.repository.PersonalityRepository;
 import com.project.findjob.repository.ResumeRepository;
+import com.project.findjob.repository.UserRepository;
 import com.project.findjob.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -33,7 +33,8 @@ public class UserController {
     private final UserService userService;
     private final ResumeRepository resumeRepository;
     private final JobRepository jobRepository;
-
+    private final UserRepository userRepository;
+    private final PersonalityRepository personalityRepository;
     // 아이디 중복확인
     @GetMapping("/regist/exists/{userid}")
     @ResponseBody
@@ -75,7 +76,7 @@ public class UserController {
 //    프로필 수정
     @PostMapping("/user/profile")
     @Transactional
-    public String update(@RequestParam("job") List<Long>jobs, Resume resume){
+    public String update(@RequestParam("job") List<Long>jobs,@RequestParam("personal")List<Long>persons, Resume resume){
         log.info("@#넘어온 job 값1 ==>"+jobs.get(0));
 
         if(resumeRepository.existsByUserid(resume.getUserid())) { // 기존에 resume이 있으면 삭제하고 새로삽입
@@ -87,9 +88,17 @@ public class UserController {
                 Job job = jobRepository.findById(jobid).orElse(null);
                 resume.getJobs().add(job);
             }
+            for (Long id : persons) {
+                Personality person = personalityRepository.findById(id).orElse(null);
+                resume.getPersonalitys().add(person);
+            }
             resumeRepository.save(resume);
 
             log.info("@# update_resume의 jobs ==>" + resume.getJobs());
+            Optional<User> user = userRepository.findByUserid(resume.getUserid());
+            User updateuser = user.get();
+            updateuser.setEnabled(true);
+            userRepository.save(updateuser);
 
         return "redirect:/main";
     }

@@ -1,5 +1,6 @@
 package com.project.findjob.controller;
 
+import com.project.findjob.model.User;
 import com.project.findjob.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,9 @@ public class ViewController {
 
     @GetMapping("/main")
     public String main(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user= (User) authentication.getPrincipal();
+        log.info("@# enabled ==>"+user.getEnabled());
         return "main";
            }
     @GetMapping("/user/profileChange")
@@ -54,10 +58,7 @@ public class ViewController {
         log.info("@# 응답은 ==>"+role+name);
         return "Main Controller : "+name;
     }
-    @GetMapping("/owner/store")
-    public String store(){
-        return "owner/store";
-    }
+
 
     @GetMapping("/main_owner")
     public String mainowener(){

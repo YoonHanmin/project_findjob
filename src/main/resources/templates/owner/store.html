@@ -1,49 +1,210 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
+
+
 <head th:replace="~{fragment/common :: head}">
 
 </head>
+<script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=y9v5nz40pr&submodules=geocoder"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YourClient-id&submodules=geocoder"></script>
+
+<!--네이버 지도 api-->
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
-body{
-font-family: 'Noto Sans KR', sans-serif;
-}
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+    body{
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+    .mystore-box{
+        margin-top: 20px;
+        border: 1px solid #eee;
+        width: 800px;
+        padding: 30px;
+    }
+    #storename{
+        font-weight: bold;
+        font-size: 32px;
+    }
+    .store-img{
+        margin-top: 10px;
+        display: flex;
+        flex-direction: row;
+    }
+    #mystore-add div{
+
+        margin-bottom: 20px;
+    }
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .swiper-slide img {
+        display: block;
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+    #profile-job{
+        margin-right: 5px;
+        text-align: center;
+        border : 1px solid #E6E6FA;
+        border-radius: 6px;
+        color : black;
+        font-weight: bold;
+        background-color:#E6E6FA;
+        cursor: pointer;
+    }
 </style>
+
 <body>
 <script>
-    // 로그인 후에 JWT를 저장하는 함수
-    function saveToken(token) {
-        localStorage.setItem('jwt', token);
-    }
+    $(document).ready(function (){
+        const swiper = new Swiper('.swiper', {
+            // Optional parameters
+            direction: 'horizontal',
+            loop: true,
 
-    // '/main'으로의 요청 시에 JWT를 헤더에 추가하여 서버에 전송하는 함수
-    function sendMainRequest() {
-        var token = localStorage.getItem('jwt');
-        if (token) {
-            // JWT를 헤더에 추가하여 '/main'으로 요청을 보냄
-            fetch('/main', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(response => {
-                    // 응답 처리
-                })
-                .catch(error => {
-                    // 오류 처리
-                });
-        } else {
-            // JWT가 없을 경우의 처리
-        }
-    }
+            // If we need pagination
+            pagination: {
+                el: '.swiper-pagination',
+            },
+
+            // Navigation arrows
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+
+            // And if we need scrollbar
+            scrollbar: {
+                el: '.swiper-scrollbar',
+            },
+
+            autoplay : {  // 자동 슬라이드 설정 , 비 활성화 시 false
+
+                delay : 3000,   // 시간 설정
+
+                disableOnInteraction : false,  // false로 설정하면 스와이프 후 자동 재생이 비활성화 되지 않음
+
+            }
+
+        });
+
+    });
 </script>
 <header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
-
 </header>
-<th:block sec:authorize="hasAuthority('ROLE_OWNER')">
-<main  th:replace="~{fragment/common :: owner-nav}">
+<main class="d-flex">
+<!--   nav -->
+    <nav  th:replace="~{fragment/common :: owner-nav(menu1)}">
+    </nav>
+<!-- 메인 container-->
+    <div class="container" style="">
+        <div class="mystore-box">
+            <div style="margin-top: 30px; margin-bottom:10px; border-bottom: 1px solid #eee;">
+                <h1><img src="/image/icon/mystore.png" width="40px;" height="40px;"> <b>나의 가게 정보</b></h1>
+            </div>
+
+
+                    <div style="margin-bottom: 10px;">
+                        <!-- Additional required wrapper -->
+                        <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img th:src="@{'/owner/store/img/' + ${store.storeimg1}}">
+                            </div>
+                            <div class="swiper-slide">
+                                <img th:src="@{'/owner/store/img/' + ${store.storeimg2}}">
+                            </div>
+                            <div class="swiper-slide">
+                                <img th:src="@{'/owner/store/img/' +${store.storeimg3}}">
+                            </div>
+
+                        </div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                    </div>
+                <div>
+                    <div class="mb-3 text-lg-center">
+                      <span id="storename" th:text="${store.storename}"></span>
+                    </div>
+                    <div class="mb-3 text-lg-center">
+                            <span th:inline="text"> <i class="fa-solid fa-phone" style="color:cornflowerblue;">
+                                [[${store.phone}]]
+                            </i></span>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <span style="margin-right: 30px;">&nbsp;&nbsp;<h4> 1. 가게업종</h4></span>
+
+
+                        <div style="display: flex; flex-direction: column; margin-right: 10px;">
+                            <img th:src="@{'/image/jobs/' + ${store.job} + '.png'}" width="80px;" height="80px;" style="border-radius: 5px;">
+                            <span id="profile-job" >음식점</span>
+                        </div>
+
+
+                </div>
+
+                <div>
+                    <span th:inline="text">&nbsp;&nbsp;<h4> 2.가게 위치 - [[${store.address}]]</h4></span>
+                </div>
+
+
+                <div style="display: none;">
+                  <span id="address" th:text="${store.address}"></span>
+                </div>
+
+                <div id="map" style="width: 300px; height: 300px;"></div>
+
+
+
+        </div>
+    </div>
 </main>
-</th:block>
 </body>
+<script layout:fragment="script">
+    var mapOptions = {
+        center: new naver.maps.LatLng(37.3595704, 127.105399),
+        zoom: 16
+    };
+
+    var map = new naver.maps.Map('map', mapOptions); // id와 option
+    function showOnMap() {
+        var address = document.getElementById('address').text;
+
+        if (address) {
+            naver.maps.Service.geocode({
+                address: address
+            }, function(status, response) {
+                if (status === naver.maps.Service.Status.ERROR) {
+                    alert('주소를 찾을 수 없습니다.');
+                    return;
+                }
+                var result = response.result;
+                var point = new naver.maps.Point(result.items[0].point.x, result.items[0].point.y);
+                map.setCenter(point);
+                map.setZoom(15);
+                var marker = new naver.maps.Marker({
+                    position: point,
+                    map: map
+                });
+            });
+        } else {
+            alert('주소를 입력해주세요.');
+        }
+    }
+
+
+
+</script>
+
 </html>

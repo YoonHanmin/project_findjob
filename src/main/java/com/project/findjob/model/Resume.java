@@ -19,8 +19,16 @@ public class Resume {
     private String education;
     private String degree;
     private Double score;
-    private String personality;
     private String liketime;
+
+    @ManyToMany
+    @JoinTable(
+            name = "resume_personality",
+            joinColumns = @JoinColumn(name="resume_id"),
+            inverseJoinColumns = @JoinColumn(name="personality_id")
+    )
+    //    user테이블에서 role 조회
+    private List<Personality> personalitys = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(

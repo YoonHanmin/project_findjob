@@ -60,8 +60,8 @@
         padding: 10px;
         margin-left: 20%;
         margin-right: 30%;
-        width: 60%;
-        height: 50%;
+        width: 700px;
+
         margin-top: 50px;
         border: 1px solid #eee;
         border-radius: 5px;
@@ -195,15 +195,18 @@
 </header>
 
 
-<main>
+<main class="d-flex">
 
 
+
+    <nav  th:replace="~{fragment/common :: user-nav(menu1)}">
+    </nav>
     <div class="container">
-        <div style="margin-top: 30px; border-bottom: 1px solid #eee">
-        <h1> 내 프로필 보기</h1>
-        </div>
         <div class="profile-box">
-        <div class="row" style="">
+            <div style="margin-top: 30px; margin-bottom:30px; border-bottom: 1px solid #eee;">
+                <h1> 내 프로필 보기</h1>
+            </div>
+            <div class="row" style="">
             <div class="col-4 justify-content-center" style="background-color: white;">
               <div style="padding: 5px; margin-left: 20px; margin-bottom: 10px;">
                   <img th:src="@{'/main/' + ${#authentication.getPrincipal().getProfileurl()}}"  width="150px" height="150px" style="border-radius:5px;">

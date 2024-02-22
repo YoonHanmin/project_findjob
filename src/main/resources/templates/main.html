@@ -10,43 +10,16 @@ font-family: 'Noto Sans KR', sans-serif;
 }
 </style>
 <body>
-<script>
-    // 로그인 후에 JWT를 저장하는 함수
-    function saveToken(token) {
-        localStorage.setItem('jwt', token);
-    }
 
-    // '/main'으로의 요청 시에 JWT를 헤더에 추가하여 서버에 전송하는 함수
-    function sendMainRequest() {
-        var token = localStorage.getItem('jwt');
-        if (token) {
-            // JWT를 헤더에 추가하여 '/main'으로 요청을 보냄
-            fetch('/main', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(response => {
-                    // 응답 처리
-                })
-                .catch(error => {
-                    // 오류 처리
-                });
-        } else {
-            // JWT가 없을 경우의 처리
-        }
-    }
-</script>
 <header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
 
 </header>
 <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
-<main  th:replace="~{fragment/common :: owner-nav}">
+<main  th:replace="~{fragment/common :: owner-nav(menu)}">
 </main>
 </th:block>
 <th:block sec:authorize="hasAuthority('ROLE_USER')">
-<main  th:replace="~{fragment/common :: user-nav}">
+<main  th:replace="~{fragment/common :: user-nav(menu)}">
 </main>
 </th:block>
 </body>

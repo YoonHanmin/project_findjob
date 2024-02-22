@@ -12,6 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=y9v5nz40pr"></script>
+
 </head>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
@@ -68,7 +70,13 @@
                 </a>
                 <th:block sec:authorize="hasAuthority('ROLE_USER')">
                 <ul class="dropdown-menu text-small">
-                    <li><a class="dropdown-item" th:href="@{'/user/profile/'+${#authentication.getName()}}">내 프로필 보기</a></li>
+<!--                    프로필 등록 여부에 따라 다르게 출력 -->
+                    <li th:if="${#authentication.getPrincipal().getEnabled()}">
+                        <a class="dropdown-item" th:href="@{'/user/profile/' + ${#authentication.getName()}}">내 프로필 보기</a>
+                    </li>
+                    <li th:unless="${#authentication.getPrincipal().getEnabled()}">
+                        <a class="dropdown-item" th:href="@{'/user/profile/' + ${#authentication.getName()}}">프로필 등록</a>
+                    </li>
                     <li><a class="dropdown-item" href="/user/profileChange">프로필 변경</a></li>
                     <li><a class="dropdown-item" href="#">설정</a></li>
                     <li><hr class="dropdown-divider"></li>
@@ -77,8 +85,8 @@
                 </th:block>
                 <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
                 <ul class="dropdown-menu text-small">
-                    <li><a class="dropdown-item" th:href="@{'/owner/profile/'+${#authentication.getName()}}">우리가게 정보</a></li>
-                    <li><a class="dropdown-item" href="/owner/profileChange">공고 올리기</a></li>
+                    <li><a class="dropdown-item" th:href="@{'/owner/store/'+${#authentication.getName()}}">우리가게 정보</a></li>
+                    <li><a class="dropdown-item" href="/owner/addEmployment">공고 올리기</a></li>
                     <li><a class="dropdown-item" href="#">직원찾기</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="/logout">로그아웃</a></li>
@@ -95,7 +103,7 @@
     </div>
 </header>
 
-<main class="d-flex flex-nowrap" th:fragment="owner-nav">
+<div class="d-flex flex-nowrap" th:fragment="owner-nav(menu)">
     <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height:100vh;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
@@ -103,33 +111,39 @@
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-lg-2">
-            <li class="nav-item">
-                <a href="/owner/store" class="nav-link"  aria-current="page">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+            <li th:if="${#authentication.getPrincipal().getEnabled()}" class="nav-item">
+                <a th:href="@{'/owner/store/' + ${#authentication.getName()}}" class="nav-link text-white" th:classappend="${menu eq 'menu1'}?'active'"  aria-current="page">
+
+                    내 가게 정보
+                </a>
+            </li>
+            <li th:unless="${#authentication.getPrincipal().getEnabled()}" class="nav-item">
+                <a href="/owner/store" class="nav-link text-white" th:classappend="${menu eq 'menu1'}?'active'"  aria-current="page">
+
                     가게등록
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+                <a href="/owner/addEmployment" class="nav-link text-white" th:classappend="${menu eq 'menu2'}?'active'">
+
                    공고올리기
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+                <a href="#" class="nav-link text-white" th:classappend="${menu eq 'menu3'}?'active'">
+
                     지원현황
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+                <a href="#" class="nav-link text-white" th:classappend="${menu eq 'menu4'}?'active'">
+
                     직원찾기
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+                <a href="#" class="nav-link text-white" th:classappend="${menu eq 'menu5'}?'active'">
+
                     메시지함
                 </a>
             </li>
@@ -153,10 +167,9 @@
 
 
 
-    <span th:style="${'font-weight:bold;font-size:20px'}" th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" th:text="'알바님'">알바님</span>
-    <span th:style="${'font-weight:bold;font-size:20px'}" th:if="${#authorization.expression('hasRole(''ROLE_OWNER'')')}" th:text="'사장님'">사장님</span>
-</main>
-<main class="d-flex flex-nowrap" th:fragment="user-nav">
+
+</div>
+<div class="d-flex flex-nowrap" th:fragment="user-nav(menu)">
     <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height:100vh;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
@@ -167,32 +180,36 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-lg-2">
             <li class="nav-item">
-                <a href="/owner/store" class="nav-link"  aria-current="page">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+                <a th:if="${#authentication.getPrincipal().getEnabled()}" th:href="@{'/user/profile/'+${#authentication.getName()}}" class="nav-link text-white" th:classappend="${menu eq 'menu1'}?'active'"  aria-current="page">
+
                     내 프로필 보기
                 </a>
+                <a th:unless="${#authentication.getPrincipal().getEnabled()}" href="/user/profileChange" class="nav-link text-white" th:classappend="${menu eq 'menu1'}?'active'"  aria-current="page">
+
+                    프로필 등록하기
+                </a>
             </li>
-            <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+            <li th:if="${#authentication.getPrincipal().getEnabled()}">
+                <a href="/user/profileChange" class="nav-link text-white" th:classappend="${menu eq 'menu2'}?'active'">
+
                    프로필 변경
                 </a>
             </li>
             <li>
                 <a href="#" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+
                     공고찾기
                 </a>
             </li>
             <li>
                 <a href="#" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+
                     지원현황
                 </a>
             </li>
             <li>
                 <a href="#" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+
                     메시지함
                 </a>
             </li>
@@ -214,7 +231,7 @@
         </div>
     </div>
 
-</main>
+</div>
 
 
 </body>
