@@ -12,15 +12,19 @@ font-family: 'Noto Sans KR', sans-serif;
 <body>
 
 <header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
-
 </header>
+<main class="d-flex">
 <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
-<main  th:replace="~{fragment/common :: owner-nav(menu)}">
-</main>
+<nav  th:replace="~{fragment/common :: owner-nav(menu)}">
+</nav>
 </th:block>
 <th:block sec:authorize="hasAuthority('ROLE_USER')">
-<main  th:replace="~{fragment/common :: user-nav(menu)}">
-</main>
+<nav  th:replace="~{fragment/common :: user-nav(menu)}">
+</nav>
 </th:block>
+
+    <div class="container">
+    </div>
+</main>
 </body>
 </html>

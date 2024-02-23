@@ -42,7 +42,7 @@
             <th:block sec:authorize="hasAuthority('ROLE_USER')">
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a style="font-size: 23px;font-weight: bold;" href="/main" class="nav-link" th:classappend="${v_menu eq 'home'} ? 'active'">HOME</a></li>
-                <li><a style="font-size: 23px;font-weight: bold;" href="#" class="nav-link" th:classappend="${v_menu eq 'find'}?'active'">알바찾기</a></li>
+                <li><a style="font-size: 23px;font-weight: bold;" href="/user/findjob" class="nav-link" th:classappend="${v_menu eq 'find'}?'active'">알바찾기</a></li>
                 <li><a style="font-size: 23px;font-weight: bold;" href="#" class="nav-link" th:classappend="${v_menu eq 'apply'}?'active'">지원현황</a></li>
                 <li><a style="font-size: 23px;font-weight: bold;" href="#" class="nav-link" th:classappend="${v_menu eq 'msg'}?'active'">메시지</a></li>
             </ul>
@@ -130,19 +130,25 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white" th:classappend="${menu eq 'menu3'}?'active'">
+                <a href="/owner/myEmploy" class="nav-link text-white" th:classappend="${menu eq 'menu3'}?'active'">
 
-                    지원현황
+                  내 공고
                 </a>
             </li>
             <li>
                 <a href="#" class="nav-link text-white" th:classappend="${menu eq 'menu4'}?'active'">
 
-                    직원찾기
+                    지원현황
                 </a>
             </li>
             <li>
                 <a href="#" class="nav-link text-white" th:classappend="${menu eq 'menu5'}?'active'">
+
+                    직원찾기
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white" th:classappend="${menu eq 'menu6'}?'active'">
 
                     메시지함
                 </a>

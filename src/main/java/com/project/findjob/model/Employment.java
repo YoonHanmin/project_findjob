@@ -3,7 +3,6 @@ package com.project.findjob.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,16 +14,29 @@ public class Employment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long storeid;
+    private String storename;
     private String ownerid;
+    private String storeimg;
     private String title;
+    private String phone;
+    private Long job;
     private String content;
+    @Temporal(TemporalType.DATE) // 해당 컬럼이 DATE타입임을 알려줌
     private Date uploaddate;
     private int pay;
+    private String location;
+    private String area1;
+    private String area2;
     private String pay_type;
-    private Time start_time;
-    private Time end_time;
+    private String start_time;
+    private String end_time;
     private String time;
 
+// Date타입 삽입전에 EntityManager가 해당 메소드 수행
+    @PrePersist
+    public void prePersist() {
+        this.uploaddate = new Date(); // 현재 날짜 설정
+    }
     @ManyToMany
     @JoinTable(
             name = "employment_personality",

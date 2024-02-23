@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragment/common :: head}">
+
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+    body{
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+</style>
+<body>
+
+<header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
+</header>
+<main class="d-flex">
+    <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
+        <nav  th:replace="~{fragment/common :: owner-nav(menu)}">
+        </nav>
+    </th:block>
+    <th:block sec:authorize="hasAuthority('ROLE_USER')">
+        <nav  th:replace="~{fragment/common :: user-nav(menu)}">
+        </nav>
+    </th:block>
+
+    <div class="container">
+        <div style="margin-top: 10px;border-bottom: 1px solid #eee;padding: 10px;margin-bottom: 30px;">
+          <h3> <img src="/image/icon/speaker.png" width="40px;" height="40px;">현재 진행중인 공고</h3>
+        </div>
+        <div style="">
+        <table class="table table-hover text-center">
+            <tr>
+                <th>공고번호</th>
+                <th>제목</th>
+                <th>작성일자</th>
+            </tr>
+
+        <th:block th:each="item : ${employ}">
+            <tr>
+                <td th:text="${item.id}"></td>
+                <td th:inline="text"><a style="text-decoration: none;font-weight: bold;" th:href="@{'/owner/showEmploy/'+${item.id}}">[[${item.title}]]</a></td>
+                <td th:text="${item.uploaddate}"></td>
+            </tr>
+        </th:block>
+        </table>
+    </div>
+    </div>
+</main>
+</body>
+</html>

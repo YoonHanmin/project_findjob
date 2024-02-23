@@ -1,13 +1,12 @@
 package com.project.findjob.controller;
 
 import com.project.findjob.model.*;
-import com.project.findjob.repository.JobRepository;
-import com.project.findjob.repository.PersonalityRepository;
-import com.project.findjob.repository.ResumeRepository;
-import com.project.findjob.repository.UserRepository;
+import com.project.findjob.repository.*;
 import com.project.findjob.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +34,7 @@ public class UserController {
     private final JobRepository jobRepository;
     private final UserRepository userRepository;
     private final PersonalityRepository personalityRepository;
+    private final EmployRepository employRepository;
     // 아이디 중복확인
     @GetMapping("/regist/exists/{userid}")
     @ResponseBody
@@ -131,5 +131,20 @@ public class UserController {
         }
         return result;
     }
+    @GetMapping("/user/findjob")
+    public String find(Model model,
+                       @PageableDefault(size = 8) Pageable pageable,
+                       @RequestParam(required = false, defaultValue = "") String area1,
+                       @RequestParam(required = false, defaultValue = "") String area2,
+                       @RequestParam(required = false, defaultValue = "") String job,
+                       @RequestParam(required = false, defaultValue = "") String time){
+
+        // Page<Employment> list =  employRepository.findByArea1ContainingOrArea2ContainingOrJobContainingOrTimeContaining(area1, area2, job, time, pageable);
+        List<Employment> list = employRepository.findAll();
+        model.addAttribute("list",list);
+
+        return "/user/findjob";
+    }
+
 
 }

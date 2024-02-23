@@ -22,13 +22,14 @@ public class ViewController {
 
     @GetMapping("/login")
     public String login(){
-        log.info("@# login()");
+
         return "/user/login";
     }
 
+
     @GetMapping("/regist")
     public String register(){
-        log.info("@# login()");
+
         return "/user/regist";
     }
 
@@ -36,7 +37,8 @@ public class ViewController {
     public String main(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user= (User) authentication.getPrincipal();
-        log.info("@# enabled ==>"+user.getEnabled());
+        log.info("@#@# 내 아이디 -==>"+user.getUserid());
+
         return "main";
            }
     @GetMapping("/user/profileChange")
@@ -55,7 +57,7 @@ public class ViewController {
         Iterator<? extends GrantedAuthority> iter = authorities.iterator();
         GrantedAuthority auth = iter.next();
         String role = auth.getAuthority();
-        log.info("@# 응답은 ==>"+role+name);
+
         return "Main Controller : "+name;
     }
 

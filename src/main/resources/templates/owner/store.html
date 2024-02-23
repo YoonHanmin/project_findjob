@@ -61,6 +61,19 @@
         background-color:#E6E6FA;
         cursor: pointer;
     }
+    #store-change{
+        height: 25px;
+        margin-left: 20px;
+
+        margin-right: 5px;
+        text-align: center;
+        border : 1px solid #E6E6FA;
+        border-radius: 6px;
+        color : black;
+        font-weight: bold;
+        background-color:#E6E6FA;
+        cursor: pointer;
+    }
 </style>
 
 <body>
@@ -108,8 +121,9 @@
 <!-- 메인 container-->
     <div class="container" style="">
         <div class="mystore-box">
-            <div style="margin-top: 30px; margin-bottom:10px; border-bottom: 1px solid #eee;">
+            <div style="margin-top: 30px; display:flex;margin-bottom:10px; border-bottom: 1px solid #eee;">
                 <h1><img src="/image/icon/mystore.png" width="40px;" height="40px;"> <b>나의 가게 정보</b></h1>
+                <span id="store-change"><a style=" text-decoration: none;" href="/owner/store">변경하기</a></span>
             </div>
 
 
@@ -120,12 +134,14 @@
                             <div class="swiper-slide">
                                 <img th:src="@{'/owner/store/img/' + ${store.storeimg1}}">
                             </div>
-                            <div class="swiper-slide">
+                            <div th:if="${store.storeimg2 != null and not #strings.isEmpty(store.storeimg2)}" class="swiper-slide">
                                 <img th:src="@{'/owner/store/img/' + ${store.storeimg2}}">
                             </div>
-                            <div class="swiper-slide">
+                            <th:block th:if="${store.storeimg3 != null and not #strings.isEmpty(store.storeimg3)}">
+                            <div  class="swiper-slide">
                                 <img th:src="@{'/owner/store/img/' +${store.storeimg3}}">
                             </div>
+                            </th:block>
 
                         </div>
                         <div class="swiper-button-next"></div>

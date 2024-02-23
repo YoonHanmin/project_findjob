@@ -9,4 +9,6 @@ public interface StoreRepository extends JpaRepository<Store,Long> {
 
     Optional<Store> findById(Long id);
     Store findByUserid(String userid);
+    boolean existsByUserid(String userid);
+    void deleteByUserid(String userid);
 }

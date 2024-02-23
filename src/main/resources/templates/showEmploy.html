@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragment/common :: head}">
+
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+    body{
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+    .profile-box{
+        display: flex;
+        flex-direction: column;
+
+        padding: 10px;
+        margin-left: 20%;
+        margin-right: 30%;
+        width: 60%;
+        height: 800px;
+        margin-top: 50px;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        background: white;
+    }
+    .profile-box > div{
+        margin-bottom: 20px;
+    }
+    #name{
+        font-size: 30px;
+        font-weight: bold;
+
+    }
+    #profile-job{
+        margin-right: 5px;
+        text-align: center;
+        border : 1px solid #E6E6FA;
+        border-radius: 6px;
+        color : black;
+        font-weight: bold;
+        background-color:#E6E6FA;
+        cursor: pointer;
+    }
+    .job{
+        border : 1px solid #e5c7ca;
+        border-radius: 6px;
+        color : black;
+        background-color: white;
+        margin-top : 30px;
+        font-weight : bold;
+        height:100px ;
+        width: 200px;
+        cursor: pointer;
+    }
+    .to-add{
+        border : 1px solid #84c1ff;
+        border-radius: 6px;
+        color : black;
+        background-color: #84c1ff;
+        margin-top : 30px;
+        font-weight : bold;
+        height:80px ;
+        width: 120px;
+        cursor: pointer;
+    }
+    .to-add-iam{
+        border : 1px solid #84c1ff;
+        border-radius: 6px;
+        color : black;
+        background-color: #84c1ff;
+        margin-top : 30px;
+        font-weight : bold;
+        height:80px ;
+        width: 120px;
+        cursor: pointer;
+    }
+    #showtime{
+        border : 1px solid #ffcd39;
+        border-radius: 6px;
+        margin-right: 5px;
+        color : black;
+        background-color:#ffcd39;
+        margin-top : 30px;
+
+        height:80px ;
+        width: 300px;
+        cursor: pointer;
+    }
+    #intro{
+        margin-right: 5px;
+        border : 1px solid #E6E6FA;
+        border-radius: 6px;
+        color : black;
+        background-color:#E6E6FA;
+        margin-top : 30px;
+
+        height:80px ;
+        width: 300px;
+        cursor: pointer;
+    }
+
+    .popup_bg{
+        position: absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background: rgba(0,0,0,0.7);
+        display:none;
+        z-index: 1; /* z-index 값 설정 */
+    }
+    .popup-search{
+        position : absolute;
+        left : calc(50% - 300px);
+        top : calc(50% - 300px);
+        width : 450px;
+        height : 300px;
+        background : white;
+        display:none;
+        border-radius: 8px;
+        z-index: 2; /* z-index 값 설정 (팝업은 배경 팝업보다 위에 있어야 함) */
+    }
+    .popup-search > #popup-search-out{
+        font-size: 2rem;
+        float: right;
+        margin-right:5px;
+        cursor: pointer;
+    }
+    .popup-iam{
+        position : absolute;
+        left : calc(50% - 300px);
+        top : calc(50% - 300px);
+        width : 450px;
+        height : 300px;
+        background : white;
+        display:none;
+        border-radius: 8px;
+        padding: 5px;
+        z-index: 2; /* z-index 값 설정 (팝업은 배경 팝업보다 위에 있어야 함) */
+    }
+    .popup-iam > #popup-iam-out{
+        font-size: 2rem;
+        float: right;
+        margin-right:5px;
+        cursor: pointer;
+    }
+    .popup-profile > #popup-profile-out{
+        font-size: 2rem;
+        float: right;
+        margin-right:5px;
+        cursor: pointer;
+    }
+    .popup-profile{
+        position : absolute;
+        left : calc(50% - 300px);
+        top : calc(50% - 300px);
+        width : 450px;
+        height : 300px;
+        background : white;
+        display:none;
+        border-radius: 8px;
+        z-index: 2; /* z-index 값 설정 (팝업은 배경 팝업보다 위에 있어야 함) */
+    }
+
+    .select {
+        padding: 15px 10px;
+    }
+    .select input[type=radio]{
+        display: none;
+    }
+    .select input[type=radio]+label{
+        display: inline-block;
+        cursor: pointer;
+        height: 24px;
+        width: 90px;
+        border: 1px solid #333;
+        line-height: 24px;
+        text-align: center;
+        font-weight:bold;
+        font-size:13px;
+    }
+    .select input[type=radio]+label{
+        background-color: #fff;
+        color: #333;
+    }
+    .select input[type=radio]:checked+label{
+        background-color: #333;
+        color: #fff;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $(".to-add").on("click",function (){
+            $(".popup_bg").css({"display":"block"});
+            $(".popup-search").css({"display":"block"});
+
+        });
+        $(".to-add-iam").on("click",function (){
+            $(".popup_bg").css({"display":"block"});
+            $(".popup-iam").css({"display":"block"});
+
+        });
+
+        $("#change-profile").on("click",function (){
+            $(".popup_bg").css({"display":"block"});
+            $(".popup-profile").css({"display":"block"});
+
+        });
+
+
+        $("#popup-search-out").on("click", function () {
+            $(".popup_bg").css({"display":"none"});
+            $(".popup-search").css({"display": "none"});
+        });
+        $("#popup-iam-out").on("click", function () {
+            $(".popup_bg").css({"display":"none"});
+            $(".popup-iam").css({"display": "none"});
+        });
+        $("#popup-profile-out").on("click", function () {
+            $(".popup_bg").css({"display":"none"});
+            $(".popup-profile").css({"display": "none"});
+        });
+
+        $('input[type=file]').change(function () {
+
+            showPreview(this);
+
+        });
+
+        $("#profile-btn").click(function(event) {
+            event.preventDefault(); // 기본 제출 동작 방지
+            if (confirm("공고를 작성하시겠습니까?")) {
+                $("#profile-form").submit(); // 폼 제출
+            }
+        });
+
+        $("#profile-form").submit(function() {
+            alert("작성이 완료되었습니다!");
+        });
+    });
+    function goBack() {
+        window.history.back();
+    }
+    function liketime(){
+        let selectedTimes = $("#mon").val() + "," +
+            $("#tue").val() + "," +
+            $("#wed").val() + "," +
+            $("#thu").val() + "," +
+            $("#fri").val() + "," +
+            $("#sat").val() + "," +
+            $("#sun").val();
+
+
+        let str = selectedTimes.replace(/1/g, "오전").replace(/2/g, "오후").replace(/3/g, "야간").replace(/4/g,"협의").replace(/all/,"전체");
+        console.log(str);
+        const time = str.split(',');
+
+
+        console.log(selectedTimes);
+        $("input[name='liketime']").val(selectedTimes);
+
+        // $("#showtime").text("월-"+time[0]+"  화-"+time[1]+"  수-"+time[2]+"  목-"+time[3]+"  금-"+time[4]+"  토-"+time[5]+"  일-"+time[6]);
+        // 'showtime' 요소를 비우고, 'time' 배열의 각 요소에 대해 <span>을 생성하여 추가합니다.
+        $("#showtime").empty();
+        time.forEach(function(item, index) {
+            const dayLabels = ["월", "화", "수", "목", "금", "토", "일"];
+            const span = $("<span>").attr("id", "showtime").html(dayLabels[index] + "-" + item);
+            $("#showtime-box").append(span);
+        });
+
+        $(".popup_bg").css({"display":"none"});
+        $(".popup-search").css({"display": "none"});
+
+    }
+
+    function introduce(){
+
+        // 선택된 체크박스의 값을 저장할 배열을 초기화합니다.
+        const selectedValues = [];
+        const showValues = [];
+        // 체크된 체크박스 요소를 선택하고 각 요소의 값을 배열에 추가합니다.
+        $('input[name="iam"]:checked').each(function() {
+            selectedValues.push($(this).val());
+            showValues.push($(this).next('label').text());
+        });
+
+        // 선택된 값들을 콘솔에 출력합니다.
+        console.log(selectedValues);
+        const str = selectedValues.join(',');
+
+
+        showValues.forEach(function(item, index) {
+
+            const addspan = $("<span>").attr("id", "intro").html(item);
+            $("#intro-box").append(addspan);
+        });
+        $("#introduce").val(str);
+        $(".popup_bg").css({"display":"none"});
+        $(".popup-iam").css({"display": "none"});
+    }
+</script>
+<body>
+
+<header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
+
+</header>
+<main class="d-flex">
+    <nav  th:replace="~{fragment/common :: owner-nav(menu2)}">
+    </nav>
+    <div class="container">
+        <div style="margin-top: 30px; border-bottom: 1px solid #eee">
+            <h1><img src="/image/icon/employ.png" width="40px;" height="40px;"> 공고 보기</h1>
+        </div>
+        <div class="profile-box">
+
+            <div class="employ_1" style="display: flex; flex-direction: row; padding: 10px;border: 1px solid #eee;">
+                <div  style="background-color: white; margin-right: 20px;">
+                    <div style="padding: 5px; margin-left: 20px; margin-bottom: 10px;">
+                        <img th:src="@{'/store/img/' + ${employ.storeimg}}" width="200" height="150">
+                    </div>
+                </div>
+                <div style="background-color:white;">
+                    <div style="margin-top:20px;" id="name" th:text="${employ.storename}">이름</div>
+
+                    <div id="loc" th:inline="text" >
+                        <i class="fa-solid fa-location-dot" style="color:green;"></i>
+                        [[${employ.location}]]
+                    </div>
+                    <div id="phone" th:inline="text" >
+                        <i class="fa-solid fa-phone" style="color:cornflowerblue;"></i>
+                        [[${employ.phone}]]
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div style="padding: 10px; border: 1px solid #eee;">
+
+                <div class="d-flex">
+                    <div style="margin-right: 30px;" >
+
+                        <h4><i class="fa-solid fa-heart" style="color:deeppink;"></i>제목 : </h4>
+                    </div>
+                    <div>
+                        <span th:inline="text" style="font-size: 20px;font-weight: bold;">[[${employ.title}]]</span>
+                    </div>
+                </div>
+
+                <div class="d-flex">
+                    <div style="margin-right: 30px;">
+                        <br>
+
+                        <h4><i class="fa-solid fa-check" style="color:#0A82FF;"></i>업무 : </h4>
+                    </div>
+
+                        <div style="display: flex; flex-direction: column; margin-right: 30px;">
+                            <img th:src="@{'/image/jobs/' + ${employ.job} + '.png'}" width="50px;" height="35px; " style="border-radius: 5px;">
+                            <span id="profile-job" >음식점</span>
+                        </div>
+                    <div style="margin-right: 30px;">
+                        <br>
+                        <h4><img src="/image/icon/clock.png" width="25px;" height="25px;">근무 시간 : </h4>
+                    </div>
+                    <div>
+                        <br>
+
+                        <div class="d-flex">
+                            <div th:inline="text" style="font-weight: bold;font-size: 20px;">
+                                [[${employ.start_time}]] ~ [[${employ.end_time}]]
+                            </div>
+                            <div style="margin-left: 20px"> <h5><b>까지</b></h5> </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="d-flex" style="margin-bottom: 30px;">
+                    <div style="margin-right: 30px;" >
+                        <h4><img src="/image/icon/money.png" width="25px;" height="25px;">급여</h4>
+                    </div>
+                    <div style="margin-right: 20px;">
+                        <span style="font-size: 20px;font-weight: bold;" th:inline="text">[[|${#numbers.formatInteger(employ.pay, 0, 'COMMA')} 원|]]</span>
+
+                    </div>
+                    <div class="form-check" style="margin-right: 15px;">
+                        <input class="form-check-input" type="checkbox" name="pay_type" value="hour" id="hour" th:checked="${employ.pay_type == 'hour'}">
+                        <label class="form-check-label" for="hour">시급</label>
+                    </div>
+                    <div class="form-check" style="margin-right: 15px;">
+                        <input class="form-check-input" type="checkbox" name="pay_type" value="day" id="day" th:checked="${employ.pay_type == 'day'}">
+                        <label class="form-check-label" for="day">일급</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="pay_type" value="month" id="month" th:checked="${employ.pay_type == 'month'}">
+                        <label class="form-check-label" for="month">월급</label>
+                    </div>
+                </div>
+
+                <div class="d-flex">
+                    <div style="margin-right: 30px;" >
+
+                        <h3><img src="/image/icon/content.png" width="25px;" height="25px;">내용</h3>
+                    </div>
+                    <div class="form-floating">
+                        <textarea  readonly class="form-control" name="content" th:text="${employ.content}" id="ff" style="height: 100px;width: 500px;"></textarea>
+                        <label for="ff">Comments</label>
+                    </div>
+
+
+                </div>
+
+
+
+
+                <div class="row">
+                    <div class="col-4">
+                        <br>
+                        <h3><img src="/image/icon/search.png" width="25px;" height="25px;">이런분을 모셔요!</h3>
+                    </div>
+                    <div class="col-8">
+                        <br>
+                        <div id="intro-box">
+                            <th:block th:each="item : ${employ.personalitys}">
+                                <span id="intro" th:text="${item.name}"></span>
+                            </th:block>
+                        </div>
+
+                    </div>
+                </div>
+                </div>
+            <div>
+
+                <button type="button" class="btn btn-primary" onclick="goBack()" >목록</button>
+            </div>
+
+        </div> <!--end of profile-box -->
+    </div> <!--end of container -->
+</main>
+
+
+
+<div class="popup_bg">
+
+</div>
+</body>
+</html>

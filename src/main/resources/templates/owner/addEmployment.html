@@ -218,13 +218,13 @@
 
         $("#profile-btn").click(function(event) {
             event.preventDefault(); // 기본 제출 동작 방지
-            if (confirm("프로필을 설정하시겠습니까?")) {
+            if (confirm("공고를 작성하시겠습니까?")) {
                 $("#profile-form").submit(); // 폼 제출
             }
         });
 
         $("#profile-form").submit(function() {
-            alert("프로필 설정이 완료되었습니다!");
+            alert("작성이 완료되었습니다!");
         });
     });
     function liketime(){
@@ -263,10 +263,11 @@
 
         // 선택된 체크박스의 값을 저장할 배열을 초기화합니다.
         const selectedValues = [];
-
+        const showValues = [];
         // 체크된 체크박스 요소를 선택하고 각 요소의 값을 배열에 추가합니다.
         $('input[name="iam"]:checked').each(function() {
             selectedValues.push($(this).val());
+            showValues.push($(this).next('label').text());
         });
 
         // 선택된 값들을 콘솔에 출력합니다.
@@ -274,7 +275,7 @@
         const str = selectedValues.join(',');
 
 
-        selectedValues.forEach(function(item, index) {
+        showValues.forEach(function(item, index) {
 
             const addspan = $("<span>").attr("id", "intro").html(item);
             $("#intro-box").append(addspan);
@@ -434,31 +435,31 @@
                                 </optgroup>
 
                                 <optgroup label="오후">
-                                    <option value="13:00">1:00</option>
-                                    <option value="13:30">1:30</option>
-                                    <option value="14:00">2:00</option>
-                                    <option value="14:30">2:30</option>
-                                    <option value="15:00">3:00</option>
-                                    <option value="15:30">3:30</option>
-                                    <option value="16:00">4:00</option>
-                                    <option value="16:30">4:30</option>
-                                    <option value="17:00">5:00</option>
-                                    <option value="17:30">5:30</option>
-                                    <option value="18:00">6:00</option>
+                                    <option value="13:00">13:00</option>
+                                    <option value="13:30">13:30</option>
+                                    <option value="14:00">14:00</option>
+                                    <option value="14:30">14:30</option>
+                                    <option value="15:00">15:00</option>
+                                    <option value="15:30">15:30</option>
+                                    <option value="16:00">16:00</option>
+                                    <option value="16:30">16:30</option>
+                                    <option value="17:00">17:00</option>
+                                    <option value="17:30">17:30</option>
+                                    <option value="18:00">18:00</option>
                                 </optgroup>
                                 <optgroup label="저녁">
-                                    <option value="18:30">6:30</option>
-                                    <option value="19:00">7:00</option>
-                                    <option value="19:30">7:30</option>
-                                    <option value="20:00">8:00</option>
-                                    <option value="20:30">8:30</option>
-                                    <option value="21:00">9:00</option>
-                                    <option value="21:30">9:30</option>
-                                    <option value="22:00">10:00</option>
-                                    <option value="22:30">10:30</option>
-                                    <option value="23:00">11:00</option>
-                                    <option value="23:30">11:30</option>
-                                    <option value="24:00">12:00</option>
+                                    <option value="18:30">18:30</option>
+                                    <option value="19:00">19:00</option>
+                                    <option value="19:30">19:30</option>
+                                    <option value="20:00">20:00</option>
+                                    <option value="20:30">20:30</option>
+                                    <option value="21:00">21:00</option>
+                                    <option value="21:30">21:30</option>
+                                    <option value="22:00">22:00</option>
+                                    <option value="22:30">22:30</option>
+                                    <option value="23:00">23:00</option>
+                                    <option value="23:30">23:30</option>
+                                    <option value="24:00">24:00</option>
 
                                 </optgroup>
                             </select>
@@ -519,6 +520,12 @@
                         <br>
                         <input name="storeid" type="hidden" th:value="${store.id}">
                         <input name="ownerid" type="hidden" th:value="${store.userid}">
+                        <input name="location" type="hidden" th:value="${store.address}">
+                        <input name="storename" type="hidden" th:value="${store.storename}">
+                        <input name="storeimg" type="hidden" th:value="${store.storeimg1}">
+                        <input name="area1" type="hidden" th:value="${store.area1}">
+                        <input name="phone" type="hidden" th:value="${store.phone}">
+                        <input name="area2" type="hidden" th:value="${store.area2}">
                         <input type="reset" class="btn btn-primary" value="취소">
                         <input type="submit" class="btn btn-primary" value="공고작성" id="profile-btn">
                     </div>
@@ -528,111 +535,47 @@
     </div> <!--end of container -->
     </main>
 
-<div class="popup-search">
-    <i class="fa-solid fa-x" id="popup-search-out"></i>
-    <div style="margin-bottom: 30px; padding: 5px;">
-        <h3>희망시간대를 선택하세요.</h3>
-    </div>
-    <div class="want-time">
 
-
-        <label for="mon"><b>월요일 : </b></label>
-        <select class="form-select" name="mon" id="mon">
-            <option value="1">오전 9~12시</option>
-            <option value="2">오후 12~18시</option>
-            <option value="3">저녁 18~24시</option>
-            <option value="4">협의가능</option>
-        </select><br>
-
-        <label for="tue"><b>화요일 : </b></label>
-        <select class="form-select" name="tue" id="tue">
-            <option value="1">오전 9~12시</option>
-            <option value="2">오후 12~18시</option>
-            <option value="3">저녁 18~24시</option>
-            <option value="4">협의가능</option>
-        </select><br>
-        <label for="wed"><b>수요일 : </b></label>
-        <select class="form-select"  name="wed" id="wed">
-            <option value="1">오전 9~12시</option>
-            <option value="2">오후 12~18시</option>
-            <option value="3">저녁 18~24시</option>
-            <option value="4">협의가능</option>
-        </select><br>
-        <label for="thu"><b>목요일 : </b></label>
-        <select class="form-select"  name="thu" id="thu">
-            <option value="1">오전 9~12시</option>
-            <option value="2">오후 12~18시</option>
-            <option value="3">저녁 18~24시</option>
-            <option value="4">협의가능</option>
-        </select><br>
-        <label for="fri"><b>금요일 : </b></label>
-        <select class="form-select" name="fri" id="fri">
-            <option value="1">오전 9~12시</option>
-            <option value="2">오후 12~18시</option>
-            <option value="3">저녁 18~24시</option>
-            <option value="4">협의가능</option>
-        </select><br>
-        <label for="sat"><b>토요일 : </b></label>
-        <select class="form-select" name="sat" id="sat">
-            <option value="1">오전 9~12시</option>
-            <option value="2">오후 12~18시</option>
-            <option value="3">저녁 18~24시</option>
-            <option value="4">협의가능</option>
-        </select><br>
-        <label for="sun"><b>일요일 : </b></label>
-        <select class="form-select" name="sun" id="sun">
-            <option value="1">오전 9~12시</option>
-            <option value="2">오후 12~18시</option>
-            <option value="3">저녁 18~24시</option>
-            <option value="4">협의가능</option>
-        </select><br>
-
-        <div style="margin-top:10px;">
-            <button class="btn btn-primary" type="button" onclick="liketime()">선택하기</button>
-        </div>
-
-    </div>
-</div>
 <div class="popup-iam">
     <i class="fa-solid fa-x" id="popup-iam-out"></i>
     <h3>골라주세요!</h3>
     <div class="d-flex flex-wrap">
-        <input type="checkbox" name="iam" class="btn-check" id="a" value="성실해요" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="a" value="1" autocomplete="off">
         <label class="btn btn-outline-secondary" for="a">성실해요</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="b" value="꼼꼼해요" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="b" value="2" autocomplete="off">
         <label class="btn btn-outline-secondary" for="b">꼼꼼해요</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="c" value="부지런해요" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="c" value="3" autocomplete="off">
         <label class="btn btn-outline-secondary" for="c">부지런해요</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="d" value="힘이좋아요" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="d" value="4" autocomplete="off">
         <label class="btn btn-outline-secondary" for="d">힘이좋아요</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="e" value="친절해요" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="e" value="5" autocomplete="off">
         <label class="btn btn-outline-secondary" for="e">친절해요</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="f" value="센스쟁이" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="f" value="6" autocomplete="off">
         <label class="btn btn-outline-secondary" for="f">센스쟁이</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="g" value="밝아요" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="g" value="7" autocomplete="off">
         <label class="btn btn-outline-secondary" for="g">밝아요</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="h" value="철두철미해요" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="h" value="8" autocomplete="off">
         <label class="btn btn-outline-secondary" for="h">철두철미해요</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="i" value="긍정왕!" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="i" value="9!" autocomplete="off">
         <label class="btn btn-outline-secondary" for="i">긍정왕!</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="j" value="체력좋아요!" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="j" value="10" autocomplete="off">
         <label class="btn btn-outline-secondary" for="j">체력좋아요!</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="k" value="융통성있어요" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="k" value="11" autocomplete="off">
         <label class="btn btn-outline-secondary" for="k">융통성있어요</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="l" value="친화력짱!" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="l" value="12" autocomplete="off">
         <label class="btn btn-outline-secondary" for="l">친화력짱!</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="m" value="재빨라요." autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="m" value="13" autocomplete="off">
         <label class="btn btn-outline-secondary" for="m">재빨라요.</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="n" value="자신감넘쳐요." autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="n" value="14" autocomplete="off">
         <label class="btn btn-outline-secondary" for="n">자신감넘쳐요.</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="o" value="시간약속 잘지켜요." autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="o" value="15" autocomplete="off">
         <label class="btn btn-outline-secondary" for="o">시간약속 잘지켜요.</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="p" value="적극적이에요" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="p" value="16" autocomplete="off">
         <label class="btn btn-outline-secondary" for="p">적극적이에요</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="q" value="지각안해요!" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="q" value="17" autocomplete="off">
         <label class="btn btn-outline-secondary" for="q">지각안해요!</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="r" value="배려를잘해요." autocomplete="off">
-        <label class="btn btn-outline-secondary" for="r">배려를잘해요.</label><br>
+        <input type="checkbox" name="iam" class="btn-check" id="r" value="18" autocomplete="off">
+        <label class="btn btn-outline-secondary" for="r">손이빨라요</label><br>
         <div>
             <button type="button" onclick="introduce()">선택하기</button>
         </div>

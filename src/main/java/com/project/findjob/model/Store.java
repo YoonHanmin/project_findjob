@@ -17,6 +17,8 @@ public class Store {
     private String storename;
     private Long job;
     private String address;
+    private String area1;
+    private String area2;
     private String phone;
     private String storeimg1;
     private String storeimg2;
