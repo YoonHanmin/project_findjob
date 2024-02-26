@@ -32,9 +32,20 @@
             const addSpan = $('<span>').attr('id', 'intro').text(item.name);
             $('#intro-box').append(addSpan);
         });
+        // 프로필 사진 변경
+        $("#change-profile").on("click",function (){
+            $(".popup_bg").css({"display":"block"});
+            $(".popup-profile").css({"display":"block"});
 
+        });
+        $("#popup-profile-out").on("click", function () {
+            $(".popup_bg").css({"display":"none"});
+            $(".popup-profile").css({"display": "none"});
+        });
+        $('input[type=file]').change(function () {
 
-
+            showPreview(this);
+        });
   function showPreview(input) {
         if (input.files && input.files[0]) {
 
@@ -299,7 +310,17 @@
 
                 </div>
             </div>
+            <div class="row">
+                <div class="col-4">
+                    <br>
+                    <h3><i class="fa-solid fa-comment" style="color:#ffcd39;"></i>한마디</h3>
+                </div>
+                <div class="col-8">
+                    <label for="exampleFormControlTextarea1" class="form-label"></label>
+                    <textarea class="form-control" readonly id="exampleFormControlTextarea1" rows="2" th:text="${resume.description}"></textarea>
 
+                </div>
+            </div>
 
         </div> <!--end of profile-box -->
     </div>

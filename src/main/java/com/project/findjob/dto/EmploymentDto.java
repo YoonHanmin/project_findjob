@@ -1,10 +1,20 @@
 package com.project.findjob.dto;
 
+import com.project.findjob.model.Personality;
+import com.project.findjob.model.Resume;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmploymentDto {
     private Long id;
     private Long storeid;
@@ -21,5 +31,8 @@ public class EmploymentDto {
     private String location;
     private String loc1;
     private String loc2;
+    private boolean applyed;
+    private List<Personality> personalitys = new ArrayList<>();
+    private List<Resume> resumes = new ArrayList<>();
 
 }

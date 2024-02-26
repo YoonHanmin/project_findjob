@@ -2,9 +2,11 @@ package com.project.findjob.controller;
 
 import com.project.findjob.model.*;
 import com.project.findjob.repository.*;
+import com.project.findjob.service.EmploymentService;
 import com.project.findjob.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +37,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final PersonalityRepository personalityRepository;
     private final EmployRepository employRepository;
+    private final EmploymentService employmentService;
     // 아이디 중복확인
     @GetMapping("/regist/exists/{userid}")
     @ResponseBody
@@ -134,17 +137,59 @@ public class UserController {
     @GetMapping("/user/findjob")
     public String find(Model model,
                        @PageableDefault(size = 8) Pageable pageable,
-                       @RequestParam(required = false, defaultValue = "") String area1,
-                       @RequestParam(required = false, defaultValue = "") String area2,
-                       @RequestParam(required = false, defaultValue = "") String job,
-                       @RequestParam(required = false, defaultValue = "") String time){
+                       @RequestParam(required = false, defaultValue = "",name = "area1") String area1,
+                       @RequestParam(required = false, defaultValue = "",name = "area2") String area2,
+                       @RequestParam(required = false, defaultValue = "",name = "job") Long job,
+                       @RequestParam(required = false, defaultValue = "",name = "time") String time){
 
-        // Page<Employment> list =  employRepository.findByArea1ContainingOrArea2ContainingOrJobContainingOrTimeContaining(area1, area2, job, time, pageable);
-        List<Employment> list = employRepository.findAll();
-        model.addAttribute("list",list);
+         Page<Employment> list = null;
+        if(job==null){
+            list  = employRepository.findByArea1ContainingAndArea2ContainingAndTimeContaining(area1,area2,time,pageable);
+            int startPage = 1; // 1페이지부터 시작
+            int endPage = list.getTotalPages(); //Page객체의 getTotalPages메소드를 통해 총 페이지수 구할수있음
+            model.addAttribute("startPage",startPage);
+            model.addAttribute("endPage",endPage);
+            model.addAttribute("list",list);
+            log.info("@# ajax성공!! ==> " + list.getTotalElements());
+        }else {
+            list = employRepository.findByArea1ContainingAndArea2ContainingAndJobAndTimeContaining(area1, area2, job, time, pageable);
+            log.info("파라미터값 ==>" + job);
+            log.info("파라미터값 ==>" + time);
+            int startPage = 1; // 1페이지부터 시작
+            int endPage = list.getTotalPages(); //Page객체의 getTotalPages메소드를 통해 총 페이지수 구할수있음
+            model.addAttribute("startPage", startPage);
+            model.addAttribute("endPage", endPage);
+            model.addAttribute("list", list);
+            log.info("@# ajax성공!! ==> " + list.getTotalElements());
+
+        }
 
         return "/user/findjob";
     }
 
+//    알바 지원 메소드
+        @PostMapping("/user/apply")
+    public String apply(@RequestParam("resume")String resume_id,@RequestParam("employ")Long employ_id){
+           Resume resume =resumeRepository.findByUserid(resume_id);
+           Optional<Employment> employmentOptional = employRepository.findById(employ_id);
+           Employment employ = employmentOptional.get();
+           employ.getResumes().add(resume);
+            resume.getEmployments().add(employ);
+            resumeRepository.save(resume);
+            employRepository.save(employ);
+            log.info("@# resumeid ==>"+resume_id);
+            log.info("@# employ id ==>"+employ_id);
+
+            log.info("지원완료!!");
+            return "redirect:/main";
+        }
+
+        @GetMapping("/user/myApply")
+    public String myApply(Model model,Authentication auth){
+        String userid = auth.getName();
+            Resume resume = resumeRepository.findByUserid(userid);
+            model.addAttribute("resume",resume);
+        return "user/myApply";
+        }
 
 }

@@ -8,6 +8,7 @@ import com.project.findjob.repository.EmployRepository;
 import com.project.findjob.repository.PersonalityRepository;
 import com.project.findjob.repository.StoreRepository;
 import com.project.findjob.repository.UserRepository;
+import com.project.findjob.service.EmploymentService;
 import com.project.findjob.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class OwnerController {
     private final UserRepository userRepository;
     private final EmployRepository employRepository;
     private final PersonalityRepository personalityRepository;
+    private final EmploymentService employmentService;
     private final StoreService storeService;
 //    내 가게 보기
     @GetMapping("/owner/store/{userid}")
@@ -106,8 +108,8 @@ public class OwnerController {
         userRepository.save(user);
         return "/main";
     }
-// 가게 이미지 등록
-    @GetMapping("/store/img/{userid}")
+// 가게 이미지 출력
+    @GetMapping("store/img/{userid}")
     @ResponseBody
     public ResponseEntity<byte[]> getFile(@PathVariable("userid") String profileurl){
         log.info("@# 프로필 이미지 =>"+profileurl);
@@ -151,9 +153,10 @@ public class OwnerController {
     public String showEmploy2(@PathVariable("id")Long id, Model model,Authentication auth){
         Optional<Employment> employmentOptional = employRepository.findById(id);
         Employment employ = employmentOptional.get();
-
+        String userid = auth.getName();
         model.addAttribute("employ",employ);
-
+        boolean applyed = employmentService.existById(id,userid);
+        model.addAttribute("applyed",applyed);
         return "/showEmploy";
     }
 

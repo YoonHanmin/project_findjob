@@ -1,5 +1,6 @@
 package com.project.findjob.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class Resume {
     private String degree;
     private Double score;
     private String liketime;
+    private String description;
 
     @ManyToMany
     @JoinTable(
@@ -38,4 +40,9 @@ public class Resume {
     )
     //    job테이블에서 job 조회
     private List<Job> jobs = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "resumes")
+//    role테이블에서 user정보 조회
+    @JsonIgnore
+    private List<Employment> employments;
 }

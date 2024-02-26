@@ -28,7 +28,9 @@
     .nav-pills .nav-link {
         padding: 15px; /* 패딩을 더 크게 설정하여 요소의 크기를 키웁니다. */
     }
+
 </style>
+
 <body>
 <header class="p-3 mb-3 border-bottom" style=" margin-bottom: 0 !important; display: flex; flex-direction: row; " th:fragment="menu(v_menu)">
     <div>
@@ -85,6 +87,7 @@
                 </th:block>
                 <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
                 <ul class="dropdown-menu text-small">
+                    <li><a class="dropdown-item"  id="change-profile">프로필 사진 변경</a></li>
                     <li><a class="dropdown-item" th:href="@{'/owner/store/'+${#authentication.getName()}}">우리가게 정보</a></li>
                     <li><a class="dropdown-item" href="/owner/addEmployment">공고 올리기</a></li>
                     <li><a class="dropdown-item" href="#">직원찾기</a></li>
@@ -101,6 +104,7 @@
             </th:block>
         </div>
     </div>
+
 </header>
 
 <div class="d-flex flex-nowrap" th:fragment="owner-nav(menu)">
@@ -208,7 +212,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+                <a href="/user/myApply" class="nav-link text-white" th:classappend="${menu eq 'menu4'}?'active'">
 
                     지원현황
                 </a>

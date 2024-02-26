@@ -38,6 +38,7 @@ public class ViewController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user= (User) authentication.getPrincipal();
         log.info("@#@# 내 아이디 -==>"+user.getUserid());
+        log.info("@#@# 내 프로필-==>"+user.getProfileurl());
 
         return "main";
            }

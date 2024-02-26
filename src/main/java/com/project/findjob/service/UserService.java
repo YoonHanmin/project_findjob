@@ -29,6 +29,8 @@ public class UserService {
 
     public User save(User user){
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setEnabled(false);
+        user.setProfileurl("default.jpg");
         return userRepository.save(user);
     }
 

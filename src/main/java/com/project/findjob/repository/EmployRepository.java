@@ -9,7 +9,10 @@ import java.util.List;
 
 public interface EmployRepository extends JpaRepository<Employment,Long> {
     List<Employment> findByOwnerid(String ownerid);
-    Page<Employment> findByArea1ContainingOrArea2ContainingOrJobContainingOrTimeContaining(String area1, String area2,String job,String time, Pageable pageable);
+    Page<Employment> findByArea1ContainingAndArea2ContainingAndJobAndTimeContaining(String area1, String area2,Long job,String time, Pageable pageable);
+    Page<Employment> findByArea1ContainingAndArea2ContainingAndTimeContaining(String area1, String area2,String time, Pageable pageable);
+    Page<Employment> findByArea1ContainingOrArea2ContainingOrJobOrTimeContaining(String area1, String area2,Long job,String time, Pageable pageable);
+
 
 
 }

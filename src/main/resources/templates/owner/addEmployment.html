@@ -264,7 +264,7 @@
         // 선택된 체크박스의 값을 저장할 배열을 초기화합니다.
         const selectedValues = [];
         const showValues = [];
-        // 체크된 체크박스 요소를 선택하고 각 요소의 값을 배열에 추가합니다.
+        // 체크된 체크박스 요소를 선택하고 각 요소의 값을 배열에 추가
         $('input[name="iam"]:checked').each(function() {
             selectedValues.push($(this).val());
             showValues.push($(this).next('label').text());
@@ -301,7 +301,7 @@
             <div class="employ_1" style="display: flex; flex-direction: row;">
                 <div  style="background-color: white; margin-right: 20px;">
                     <div style="padding: 5px; margin-left: 20px; margin-bottom: 10px;">
-                        <img th:src="@{'/owner/store/img/' + ${store.storeimg1}}" width="200" height="150">
+                        <img th:src="@{'/store/img/' + ${store.storeimg1}}" width="200" height="150">
                     </div>
                 </div>
                 <div style="background-color:white;">
@@ -416,6 +416,9 @@
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="time" value="weekend" id="weekend"><label class="form-check-label" for="weekend">주말</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="time" value="weekend" id="all"><label class="form-check-label" for="all">전체</label>
                             </div>
 
                         </div>
@@ -556,7 +559,7 @@
         <label class="btn btn-outline-secondary" for="g">밝아요</label><br>
         <input type="checkbox" name="iam" class="btn-check" id="h" value="8" autocomplete="off">
         <label class="btn btn-outline-secondary" for="h">철두철미해요</label><br>
-        <input type="checkbox" name="iam" class="btn-check" id="i" value="9!" autocomplete="off">
+        <input type="checkbox" name="iam" class="btn-check" id="i" value="9" autocomplete="off">
         <label class="btn btn-outline-secondary" for="i">긍정왕!</label><br>
         <input type="checkbox" name="iam" class="btn-check" id="j" value="10" autocomplete="off">
         <label class="btn btn-outline-secondary" for="j">체력좋아요!</label><br>

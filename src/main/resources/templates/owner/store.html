@@ -132,7 +132,7 @@
                         <div class="swiper mySwiper">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
-                                <img th:src="@{'/owner/store/img/' + ${store.storeimg1}}">
+                                <img th:src="@{'/store/img/' + ${store.storeimg1}}">
                             </div>
                             <div th:if="${store.storeimg2 != null and not #strings.isEmpty(store.storeimg2)}" class="swiper-slide">
                                 <img th:src="@{'/owner/store/img/' + ${store.storeimg2}}">

@@ -37,6 +37,7 @@ public class Employment {
     public void prePersist() {
         this.uploaddate = new Date(); // 현재 날짜 설정
     }
+
     @ManyToMany
     @JoinTable(
             name = "employment_personality",
@@ -45,4 +46,12 @@ public class Employment {
     )
     //    personality테이블에서  personality 조회
     private List<Personality> personalitys = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "employment_resume",
+            joinColumns = @JoinColumn(name="employ_id"),
+            inverseJoinColumns = @JoinColumn(name="resume_id")
+    )
+    private List<Resume> resumes = new ArrayList<>();
 }

@@ -136,7 +136,7 @@
         margin-left: 20%;
         margin-right: 30%;
         width: 60%;
-        height: 50%;
+        height: 670px;
         margin-top: 50px;
         border: 1px solid #eee;
         border-radius: 5px;
@@ -404,6 +404,19 @@
                     <span class="to-add-iam" style="margin-left : 10px;">추가</span>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-4">
+                    <br>
+                    <h3><i class="fa-solid fa-comment" style="color:#ffcd39;"></i>한마디</h3>
+                </div>
+                <div class="col-8">
+                    <label for="exampleFormControlTextarea1" class="form-label"></label>
+                    <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="2"></textarea>
+
+                </div>
+            </div>
+
+
                 <div>
                     <br>
                     <input name="userid" type="hidden" th:value="${#authentication.getPrincipal().getUserid()}">
