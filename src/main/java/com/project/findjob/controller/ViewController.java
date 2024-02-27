@@ -1,6 +1,5 @@
 package com.project.findjob.controller;
 
-import com.project.findjob.model.User;
 import com.project.findjob.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +34,10 @@ public class ViewController {
 
     @GetMapping("/main")
     public String main(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user= (User) authentication.getPrincipal();
-        log.info("@#@# 내 아이디 -==>"+user.getUserid());
-        log.info("@#@# 내 프로필-==>"+user.getProfileurl());
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User user= (User) authentication.getPrincipal();
+//        log.info("@#@# 내 아이디 -==>"+user.getUserid());
+//        log.info("@#@# 내 프로필-==>"+user.getProfileurl());
 
         return "main";
            }

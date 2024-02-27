@@ -56,8 +56,13 @@
             <input type="text" placeholder="ID" name="username">
             <input type="password" placeholder="Password"  name="password">
             <a href="#">Forgot your password?</a>
+            <div class="d-flex">
             <button type="button" id="user-btn" >로그인</button>
             <button style="margin-top: 5px; "type="button" class="user-regist" onclick="location.href='/regist'">회원가입</button>
+            </div>
+            <div style="margin-top: 10px;">
+                <a href="/oauth2/authorization/naver"><img src="/image/naverlogin.png" width="150" height="50"></a>
+            </div>
         </form>
     </div>
     <div class="overlay-container">

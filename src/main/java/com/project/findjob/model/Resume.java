@@ -22,6 +22,9 @@ public class Resume {
     private Double score;
     private String liketime;
     private String description;
+    private String username;
+    private String loc;
+
 
     @ManyToMany
     @JoinTable(

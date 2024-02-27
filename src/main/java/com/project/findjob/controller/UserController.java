@@ -3,6 +3,7 @@ package com.project.findjob.controller;
 import com.project.findjob.model.*;
 import com.project.findjob.repository.*;
 import com.project.findjob.service.EmploymentService;
+import com.project.findjob.service.ResumeService;
 import com.project.findjob.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +34,13 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final ResumeRepository resumeRepository;
+    private final ResumeService resumeService;
     private final JobRepository jobRepository;
     private final UserRepository userRepository;
     private final PersonalityRepository personalityRepository;
     private final EmployRepository employRepository;
     private final EmploymentService employmentService;
+    private final StoreRepository storeRepository;
     // 아이디 중복확인
     @GetMapping("/regist/exists/{userid}")
     @ResponseBody
@@ -95,15 +98,19 @@ public class UserController {
                 Personality person = personalityRepository.findById(id).orElse(null);
                 resume.getPersonalitys().add(person);
             }
-            resumeRepository.save(resume);
+
+
 
             log.info("@# update_resume의 jobs ==>" + resume.getJobs());
             Optional<User> user = userRepository.findByUserid(resume.getUserid());
             User updateuser = user.get();
+
+            resume.setLoc(updateuser.getArea2());
             resume.setProfile_img(updateuser.getProfileurl());
             updateuser.setEnabled(true);
             userRepository.save(updateuser);
 
+        resumeRepository.save(resume);
         return "redirect:/main";
     }
 //    내 프로필 보기
@@ -191,5 +198,19 @@ public class UserController {
             model.addAttribute("resume",resume);
         return "user/myApply";
         }
+    @GetMapping("/finduser")
+    public String finduser(Model model,Authentication authentication){
+        String ownerId = authentication.getName();
+        model.addAttribute("ownerId",ownerId);
+        log.info(ownerId);
+        return "/owner/finduser";
+    }
 
+    @GetMapping("/finduser/loc")
+    public @ResponseBody List<Resume> finduserLoc(Model model,@RequestParam("ownerId") String ownerId){
+        Store store = storeRepository.findByUserid(ownerId);
+        String loc = store.getArea2();
+        List<Resume> resumes = resumeService.findByLoc(loc);
+        return resumes;
+    }
 }

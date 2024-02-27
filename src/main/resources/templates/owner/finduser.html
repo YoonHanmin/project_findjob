@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragment/common :: head}">
+
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+    body{
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+    .find-user-filter-loc{
+        padding: 5px;
+        border: 1px solid #bfd1ec;
+        background-color: white;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 15px;
+        cursor: pointer;
+        margin-bottom: 5px;
+    }
+    .find-user-filter-loc:hover{
+        background-color: #bfd1ec;
+    }
+</style>
+<script th:inline="javascript">
+    $(document).ready(function (){
+
+        var ownerId = [[${ownerId}]];
+
+
+
+    $("#loc").on("click",function (){
+        console.log(ownerId);
+        $.ajax({
+            url: '/finduser/loc', // AJAX 요청 보낼 엔드포인트
+            type: 'GET', // GET 또는 POST 등 요청 타입 지정
+            data: { ownerId: ownerId }, // 요청 시 함께 보낼 데이터
+            success: function(response) {
+                // 성공적으로 응답을 받았을 때 수행할 작업
+                console.log("Success:", response);
+                const resumes = response;
+                console.log(resumes[0].profile_img);
+
+                // 새로운 데이터 중복누적 방지하기위해 비움
+                $('#profile-all').empty();
+
+                // 받아온 List를 화면에 출력
+                resumes.forEach(function(resume) {
+                    var div = $('<div class="list-group-item list-group-item-action py-3 lh-sm" aria-current="true" style="border: 1px solid #eee;">');
+                    var listdiv = $('<div class="list d-flex">');
+                    div.append(listdiv);
+                    var profilediv = $('<div class="profile-img">');
+                    listdiv.append(profilediv);
+                    var img = "<img src='/main/" + resume.profile_img + "' style='border-radius: 10px;width:80px;height:80px;'>";
+                    profilediv.append(img);
+
+                    var profile_text_div = $('<div class="profile-text" style="margin-left: 30px;display: flex; flex-direction: column;">');
+                    listdiv.append(profile_text_div);
+
+                    var span1 = $('<span>');
+                    span1.text(resume.username).css({"font-weight": "bold","font-size":"20px"});
+
+                    var span2 = $('<span>');
+                    var icon =  "<i class='fa-solid fa-location-dot' style='color:green;'></i>";
+                    span2.text(resume.loc+" 거주");
+                    span2.append(icon);
+                    var span3 = $('<span>');
+                    span3.text(resume.description);
+
+                    profile_text_div.append(span1);
+                    profile_text_div.append(span2);
+                    profile_text_div.append(span3);
+
+                    $('#profile-all').append(div);
+
+                });
+
+
+
+
+
+
+            },
+            error: function(xhr, status, error) {
+                // 요청이 실패했을 때 수행할 작업
+                console.error("Error:", error);
+            }
+
+        });
+
+
+    });
+    });
+</script>
+<body>
+
+<header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
+</header>
+<main class="d-flex">
+    <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
+        <nav  th:replace="~{fragment/common :: owner-nav(menu5)}">
+        </nav>
+    </th:block>
+
+
+    <div class="container-fluid">
+        <div style="margin-top: 10px;border-bottom: 1px solid #eee;padding: 10px;margin-bottom: 30px;">
+            <h3> <img src="/image/icon/speaker.png" width="40px;" height="40px;">직원 찾기</h3>
+        </div>
+
+        <div class="d-flex">
+            <div style="">
+            <span id="loc" class="find-user-filter-loc">가게랑 가까워요.</span>
+            </div>
+        </div>
+
+        <div>
+            <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary" style="width: 380px;margin-top: 20px;">
+                <div class="d-flex" style="padding:10px; height:50px;border: 1px solid #eee;">
+                    <img class="bi pe-none me-2" src="/image/icon/people.png" width="30" height="24">
+                    <span class="fs-5 fw-semibold">매력만점 인재 리스트</span>
+                </div>
+                <div id="profile-all" class="list-group list-group-flush border-bottom scrollarea">
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- <div class="popup-profile-box">
+    <div class="profile-box">
+        <div style="margin-top: 30px; margin-bottom:30px; border-bottom: 1px solid #eee;">
+            <h1> 내 프로필 보기</h1>
+        </div>
+        <div class="row" style="">
+            <div class="col-4 justify-content-center" style="background-color: white;">
+                <div style="padding: 5px; margin-left: 20px; margin-bottom: 10px;">
+                    <img th:src="@{'/main/' + ${#authentication.getPrincipal().getProfileurl()}}"  width="150px" height="150px" style="border-radius:5px;">
+                </div>
+            </div>
+            <div class="col-8 justify-content-center" style="background-color:white;">
+                <div style="margin-top:20px;"id="name" th:text="${#authentication.getPrincipal().getUname()}">이름</div>
+                <div id="age">
+                   <span th:if="${#authentication.getPrincipal().getGender() == 'F'}">
+                 <i class="fa-solid fa-user" style="color: hotpink;"></i>
+                   </span>
+                    <span th:if="${#authentication.getPrincipal().getGender() == 'M'}">
+                     <i class="fa-solid fa-user" style="color: blue;"></i>
+                     </span>
+                    <span th:text="${#authentication.getPrincipal().getBirthday()}">
+
+                    </span>
+                    <span th:if="${#authentication.getPrincipal().getGender() == 'M'}">남성</span>
+                    <span th:if="${#authentication.getPrincipal().getGender() == 'F'}">여성</span>
+                </div>
+                <div id="loc" th:inline="text" >
+                    <i class="fa-solid fa-location-dot" style="color:green;"></i>
+                    [[${#authentication.getPrincipal().getAddress()}]]
+                </div>
+                <div id="phone" th:inline="text" >
+                    <i class="fa-solid fa-phone" style="color:cornflowerblue;"></i>
+                    [[${#authentication.getPrincipal().getPhone()}]]
+                </div>
+
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-4" style="background-color: white;">
+                <button type="button" id="change-profile">프로필사진 변경</button>
+            </div>
+            <div class="col-8" style="background-color: white;">
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <br>
+            </div>
+        </div>
+
+        <div class="row" style="" >
+            <div class="col-4">
+                <br>
+                <h3><i class="fa-solid fa-heart" style="color:deeppink;"></i>희망업무</h3>
+            </div>
+            <div class="col-8 d-flex flex-wrap" id="jobtype">
+
+                <th:block th:each="job : ${resume.getJobs()}">
+                    <div style="display: flex; flex-direction: column; margin-right: 10px;">
+                        <img th:src="@{'/image/jobs/'+${job.getId()+'.png'}}" width="80px;" height="80px;" style="border-radius: 5px;">
+                        <span id="profile-job" th:text="${job.getName()}"></span>
+                    </div>
+                </th:block>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <br>
+                <h3><i class="fa-regular fa-clock"></i>희망시간대</h3>
+            </div>
+            <div class="col-8">
+                <br>
+                <div id="time-box"></div>
+
+
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <br>
+                <h3><i class="fa-regular fa-face-laugh" style="color:dodgerblue;"></i>자기소개</h3>
+            </div>
+            <div class="col-8">
+                <br>
+                <div id="intro-box"></div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <br>
+                <h3><i class="fa-solid fa-comment" style="color:#ffcd39;"></i>한마디</h3>
+            </div>
+            <div class="col-8">
+                <label for="exampleFormControlTextarea1" class="form-label"></label>
+                <textarea class="form-control" readonly id="exampleFormControlTextarea1" rows="2" th:text="${resume.description}"></textarea>
+
+            </div>
+        </div>
+
+    </div> --> <!--end of profile-box
+</div>
+<div class="popup-bg"></div> -->
+</body>
+</html>

@@ -62,6 +62,9 @@
 <!--            권한이 있으면 -->
             <div style="margin-right: 10px;">
             <span th:style="${'font-weight:bold;font-size:20px'}" th:text="${#authentication.getPrincipal().getUname()}">사용자</span>
+                <th:block th:if="${#authentication.getPrincipal().getSocial()}">
+                    <span><img src="/image/naver-icon.png" width="21" height="21"></span>
+                </th:block>
                 <span th:style="${'font-weight:bold;font-size:20px'}" th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" th:text="'알바님'">알바님</span>
                 <span th:style="${'font-weight:bold;font-size:20px'}" th:if="${#authorization.expression('hasRole(''ROLE_OWNER'')')}" th:text="'사장님'">사장님</span>
 <!--            <span th:style="${'font-weight:bold;font-size:20px'}"  th:text="${#authentication.authorities}">권한</span>-->
@@ -146,7 +149,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white" th:classappend="${menu eq 'menu5'}?'active'">
+                <a href="/finduser" class="nav-link text-white" th:classappend="${menu eq 'menu5'}?'active'">
 
                     직원찾기
                 </a>
@@ -206,7 +209,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+                <a href="/finduser" class="nav-link text-white">
 
                     공고찾기
                 </a>

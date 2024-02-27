@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +41,9 @@ public class User implements UserDetails {
     private LocalDate birthday;
     private String profileurl;
     private Boolean enabled;
+    private Boolean social;
+    private String area1;
+    private String area2;
 
     // Resume 엔티티와의 One-to-Many 관계 매핑
 //    @OneToMany(mappedBy = "user")
@@ -52,6 +56,7 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name="role_id")
     )
     //    user테이블에서 role 조회
+
     private List<Role> roles = new ArrayList<>();
 
     // 사용자가 가진 권한정보는 loadUserBy~시점에 이미 DB에서 가져와 세팅되어있으므로 roles를 스트림 형태로 꺼내와 사용자의 권한을 리턴하는 메소드

@@ -31,6 +31,12 @@ public class UserService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setEnabled(false);
         user.setProfileurl("default.jpg");
+        user.setSocial(false);
+        String address = user.getAddress();
+        String[] area = address.split(" ");
+        user.setArea1(area[0]);
+        user.setArea2(area[1]);
+
         return userRepository.save(user);
     }
 

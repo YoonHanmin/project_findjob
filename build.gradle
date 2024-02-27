@@ -46,6 +46,10 @@ dependencies {
 //    apache commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.12.0'
 
+    // https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '6.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
 }
 
 tasks.named('test') {

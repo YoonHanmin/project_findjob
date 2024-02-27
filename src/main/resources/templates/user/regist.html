@@ -155,7 +155,7 @@
         <input type="button" class="btn btn-secondary" onclick="execDaumPostcode()" value="우편번호 찾기">
     </div>
     <div>
-        <input type="text" id="address"class="form-control " aria-label="Username" aria-describedby="basic-addon1" placeholder="주소" style="margin-bottom: 5px;">
+        <input type="text" id="address" name="address" class="form-control " aria-label="Username" aria-describedby="basic-addon1" placeholder="주소" style="margin-bottom: 5px;">
         <input type="text" id="detailAddress"class="form-control " aria-label="Username" aria-describedby="basic-addon1" placeholder="상세주소" style="margin-bottom: 5px;">
         <span id="addressValidationMessage"></span>
     </div>
@@ -241,7 +241,8 @@
         <span>
       		  <button class="btn btn-secondary" id="regist-btn" onclick="submitRegist()">회원가입</button>
     	</span>
-
+        <input type="hidden" name="area1">
+        <input type="hidden" name="area2">
     </div>
     </form>
 

@@ -245,8 +245,7 @@
         console.log(selectedTimes);
         $("input[name='liketime']").val(selectedTimes);
 
-        // $("#showtime").text("월-"+time[0]+"  화-"+time[1]+"  수-"+time[2]+"  목-"+time[3]+"  금-"+time[4]+"  토-"+time[5]+"  일-"+time[6]);
-        // 'showtime' 요소를 비우고, 'time' 배열의 각 요소에 대해 <span>을 생성하여 추가합니다.
+        // 'showtime' 요소를 비우고, 'time' 배열의 각 요소에 대해 <span>을 생성하여 추가
         $("#showtime").empty();
         time.forEach(function(item, index) {
             const dayLabels = ["월", "화", "수", "목", "금", "토", "일"];

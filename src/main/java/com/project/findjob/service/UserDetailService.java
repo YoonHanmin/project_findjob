@@ -4,8 +4,10 @@ import com.project.findjob.model.User;
 import com.project.findjob.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,4 +36,17 @@ public User loadUserByUsername(String userid) throws UsernameNotFoundException {
 
     return user;
 }
+    public UserDetails loadUserByOAuth2User(OAuth2User oAuth2User) {
+        // OAuth 2.0을 통해 가져온 사용자 정보에서 필요한 정보를 추출
+        String oauth2Username = oAuth2User.getAttribute("name");
+        String oauth2Email = oAuth2User.getAttribute("email");
+        // 기타 필요한 정보들을 추출
+        User user = userRepository.findByUname(oauth2Username);
+
+
+        return user;
+    }
+
+
+
 }
