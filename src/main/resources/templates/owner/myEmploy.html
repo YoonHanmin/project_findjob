@@ -15,7 +15,7 @@
 </header>
 <main class="d-flex">
     <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
-        <nav  th:replace="~{fragment/common :: owner-nav(menu)}">
+        <nav  th:replace="~{fragment/common :: owner-nav(menu3)}">
         </nav>
     </th:block>
     <th:block sec:authorize="hasAuthority('ROLE_USER')">

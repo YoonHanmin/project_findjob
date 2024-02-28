@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragment/common :: head}">
+
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+    body{
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+    .profile-box{
+        display: flex;
+        flex-direction: column;
+
+        padding: 10px;
+        margin-left: 50px;
+        margin-right: 50px;
+        width: 100%;
+        height: 800px;
+        margin-top: 50px;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        background: white;
+    }
+    .profile-box > div{
+        margin-bottom: 20px;
+    }
+    #name{
+        font-size: 30px;
+        font-weight: bold;
+
+    }
+    #profile-job{
+        margin-right: 5px;
+        text-align: center;
+        border : 1px solid #E6E6FA;
+        border-radius: 6px;
+        color : black;
+        font-weight: bold;
+        background-color:#E6E6FA;
+        cursor: pointer;
+    }
+    .job{
+        border : 1px solid #e5c7ca;
+        border-radius: 6px;
+        color : black;
+        background-color: white;
+        margin-top : 30px;
+        font-weight : bold;
+        height:100px ;
+        width: 200px;
+        cursor: pointer;
+    }
+
+    #intro{
+        margin-right: 5px;
+        border : 1px solid #E6E6FA;
+        border-radius: 6px;
+        color : black;
+        background-color:#E6E6FA;
+        margin-top : 30px;
+        font-weight: bold;
+        height:80px ;
+        width: 300px;
+        cursor: pointer;
+    }
+
+
+    .select {
+        padding: 15px 10px;
+    }
+    .select input[type=radio]{
+        display: none;
+    }
+    .select input[type=radio]+label{
+        display: inline-block;
+        cursor: pointer;
+        height: 24px;
+        width: 90px;
+        border: 1px solid #333;
+        line-height: 24px;
+        text-align: center;
+        font-weight:bold;
+        font-size:13px;
+    }
+    .select input[type=radio]+label{
+        background-color: #fff;
+        color: #333;
+    }
+    .select input[type=radio]:checked+label{
+        background-color: #333;
+        color: #fff;
+    }
+    .applicant-list{
+
+    }
+
+    #time-box{
+        margin-left: 30px;
+    }
+    #time{
+        margin-right: 10px;
+        border : 1px solid #ffcd39;
+        border-radius: 6px;
+        color : black;
+        font-weight: bold;
+        background-color:#ffcd39;
+        margin-top : 30px;
+
+        height:80px ;
+        width: 300px;
+        cursor: pointer;
+    }
+
+    #user-profile-job{
+        margin-right: 5px;
+        text-align: center;
+        border : 1px solid #E6E6FA;
+        border-radius: 6px;
+        color : black;
+        font-weight: bold;
+        background-color:#E6E6FA;
+        cursor: pointer;
+    }
+    .user-profile-box{
+        padding: 10px;
+        width: 700px;
+        margin-top: 10px;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        background: white;
+    }
+    .popup_bg{
+        position: absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background: rgba(0,0,0,0.7);
+        display:none;
+        z-index: 1; /* z-index 값 설정 */
+    }
+    .popup-user-view{
+        padding: 30px;
+        position : absolute;
+        left : calc(50% - 300px);
+        top : calc(50% - 500px);
+        width: 800px;
+
+        background : white;
+        display:none;
+        border-radius: 8px;
+        z-index: 2; /* z-index 값 설정 (팝업은 배경 팝업보다 위에 있어야 함) */
+    }
+    .popup-user-view > #popup-user-view-out{
+        font-size: 2rem;
+        float: right;
+        margin-right:5px;
+        cursor: pointer;
+    }
+    #user-name{
+        font-size: 30px;
+        font-weight: bold;
+
+    }
+    #text-info div{
+        font-weight: bold;
+    }
+    .deadline-label {
+        margin-right: 10px;
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .deadline {
+        padding: 5px 10px;
+        font-size: 40px;
+        font-weight: bold;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        color : red;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+        $('#profile-all').on('click', '.list-group-item', function() {
+
+            $("html, body").scrollTop(0);
+            $(".popup_bg").css({"display":"block"});
+            $(".popup-user-view").css({ "display": "block" });
+
+            var profile_img = $(this).find('input[name="profile_img"]').val();
+            var username = $(this).find('input[name="username"]').val();
+            var description = $(this).find('input[name="description"]').val();
+            var liketime = $(this).find('input[name="liketime"]').val();
+            var loc = $(this).find('input[name="loc"]').val();
+            var gender = $(this).find('input[name="gender').val();
+            var birthday = $(this).find('input[name="birthday').val();
+            var phone = $(this).find('input[name="phone').val();
+            var education = $(this).find('input[name="education').val();
+            var degree = $(this).find('input[name="degree').val();
+
+            var job = $(this).find('input[name="job"]').map(function() {
+                return {
+                    id: $(this).val().substring(0,1),
+                    name: $(this).val().substring(1)
+                };
+            }).get(); // job은 배열 형태로 가져옴
+
+            var personality = $(this).find('input[name="personality"]').map(function() {
+                return $(this).val();
+            }).get(); // personality는 배열 형태로 가져옴
+
+            if(gender=='M'){
+                gender = '남성'
+                $('#gender-icon').css("color","blue");
+            }else{ gender = '여성'
+                $('#gender-icon').css("color","hotpink");}
+            var birth = birthday+' ';
+            var age =birth.substring(0,4);
+
+
+
+            // 가져온 값들을 변수에 담거나 다른 처리를 함
+            console.log("Profile Image:", profile_img);
+            console.log("Username:", username);
+            console.log("Description:", description);
+            console.log("Liketime:", liketime);
+            console.log("Location:", loc);
+            console.log("Jobs:", job);
+            console.log("Personality:", personality);
+
+            var profile = $("#profile-img")
+            // 이미지 초기화 시켜주기
+            profile.empty();
+
+
+            var img = "<img id='userimg' src='/main/" + profile_img + "' style='border-radius: 10px;width:180px;height:180px;'>";
+            profile.append(img);
+            $("#user-name").text(username);
+            $("#gender").text(gender+"  "+age+" 년생");
+            $("#location").text("부산광역시  "+loc);
+
+            var icon = $('<i class="fa-solid fa-phone" style="color:cornflowerblue;">');
+            $("#user-phone").empty().append(icon).append(phone);
+
+
+            // 희망 직무 배열 순환하며 출력
+            $("#wantjob").empty();
+            job.forEach(function (item){
+
+                var jobid = item.id;
+                var jobname = item.name;
+                var imagePath = "/image/jobs/" + jobid + ".png";
+                var imgElement = $('<img>').attr({
+                    src: imagePath,
+                    width: "65px",
+                    height: "65px",
+                    style: "border-radius: 5px; display: inline-block;"
+                });
+                var jobnames = $('<strong>').text(jobname);
+                $("#wantjob").append(imgElement).append(jobnames);
+            });
+
+            //     선호 시간대 표시
+            // 선택된 값들을 콘솔에 출력합니다.
+            $('#time-box').empty();
+            const days = ['월', '화', '수', '목', '금', '토', '일','상관없음']; // 요일 배열
+            const times = ['오전', '오후', '저녁', '전체']; // 시간대 배열
+            const timearray = liketime.split(',');
+            console.log(timearray);
+            timearray.forEach(function(item,index) {
+
+                const day = days[index]; // 해당하는 요일 가져오기
+                const time = times[timearray[index]-1]; // 해당하는 시간대 가져오기
+                const text = day + ' - ' + time; // 요일과 시간대를 합쳐서 출력할 텍스트 생성
+                // span 태그를 생성하고 text를 설정하여 #intro-box에 추가
+                const addSpan = $('<span>').attr('id', 'time').text(text);
+                $('#time-box').append(addSpan);
+            });
+
+            // 자기소개 출력
+            $('#intro-box').empty();
+            personality.forEach(function (item){
+                const addSpan = $('<span>').attr('id', 'intro').text(item);
+                $('#intro-box').append(addSpan);
+            });
+
+            $("#say").empty().val(description);
+            $("#edu").empty().append(education);
+            $("#degree").empty().append(degree);
+            console.log(education);
+
+
+
+        });
+
+        $("#popup-user-view-out").click(function (){
+
+            $(".popup_bg").css({"display":"none"});
+            $(".popup-user-view").css({ "display": "none" });
+        });
+
+
+
+
+
+    });
+    function goBack() {
+        window.history.back();
+    }
+
+    function chat(){
+        if(confirm("해당 지원자에게 채팅을 보내시겠습니까?")){
+            location.href='/owner/chat';
+        }
+    }
+</script>
+<body>
+
+<header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
+
+</header>
+<main class="d-flex">
+    <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
+        <nav  th:replace="~{fragment/common :: owner-nav(menu)}">
+        </nav>
+    </th:block>
+    <th:block sec:authorize="hasAuthority('ROLE_USER')">
+        <nav  th:replace="~{fragment/common :: user-nav(menu)}">
+        </nav>
+    </th:block>
+    <div class="container-fluid">
+
+
+
+        <div style="margin-top: 30px; border-bottom: 1px solid #eee">
+            <h1><img src="/image/icon/employ.png" width="40px;" height="40px;"> 공고 보기</h1>
+        </div>
+
+        <div style="width: 80%;display: flex;flex-direction: row;">
+            <div class="applicant">
+                <div class="applicant-list">
+
+                    <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary" style="width: 400px;margin-top: 50px;">
+                        <div class="d-flex" style="padding:10px; height:50px;border: 1px solid #eee;">
+                            <img class="bi pe-none me-2" src="/image/icon/people.png" width="30" height="24">
+                            <span class="fs-5 fw-semibold">지원자 현황</span>
+                        </div>
+                        <div id="profile-all" class="list-group list-group-flush border-bottom scrollarea">
+                            <th:block th:each="resume : ${employ.resumes}">
+                            <div class="list-group-item list-group-item-action py-3 lh-sm" style="border: 1px solid #eee;">
+                                <input type="hidden" name="profile_img" th:value="${resume.getProfile_img()}">
+                                <input type="hidden" name="username" th:value="${resume.getUsername()}">
+                                <input type="hidden" name="description" th:value="${resume.getDescription()}">
+                                <input type="hidden" name="liketime" th:value="${resume.getLiketime()}">
+                                <input type="hidden" name="loc" th:value="${resume.getLoc()}">
+                                <input type="hidden" name="gender" th:value="${resume.getGender()}">
+                                <input type="hidden" name="phone" th:value="${resume.getPhone()}">
+                                <input type="hidden" name="birthday" th:value="${resume.getBirthday()}">
+                                <input type="hidden" name="education" th:value="${resume.getEducation()}">
+                                <input type="hidden" name="degree" th:value="${resume.getDegree()}">
+                                <th:block th:each="job : ${resume.jobs}">
+
+                                    <input type="hidden" name="job" th:value="${job.id}+${job.name}">
+                                </th:block>
+                                <th:block th:each="personality : ${resume.personalitys}">
+                                <input type="hidden" id="personality4" name="personality"  th:value="${personality.name}">
+                                </th:block>
+                                <div class="list d-flex">
+                                    <div class="profile-img">
+                                        <img th:src="@{'/main/'+${resume.profile_img}}" style="border-radius: 10px;width:90px;height:90px;">
+                                    </div>
+                                    <div class="profile-text" style="margin-left: 30px;display: flex; flex-direction: column;">
+                                        <span style="font-weight: bold; font-size: 20px;"th:text="${resume.username}"></span>
+                                        <span th:inline="text"><i class="fa-solid fa-location-dot" style="color:green;" aria-hidden="true"></i>
+                                        [[${resume.getLoc()}]]
+                                        </span>
+                                        <span th:text="${resume.getDescription()}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            </th:block>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="profile-box">
+
+            <div class="employ_1" style="display: flex; flex-direction: row; padding: 10px;border: 1px solid #eee;">
+                <div  style="background-color: white; margin-right: 20px;">
+                    <div style="padding: 5px; margin-left: 20px; margin-bottom: 10px;">
+                        <img th:src="@{'/store/img/' + ${employ.storeimg}}" width="200" height="150">
+                    </div>
+                </div>
+                <div style="background-color:white;">
+                    <div style="margin-top:20px;" id="name" th:text="${employ.storename}">이름</div>
+
+                    <div id="loc" th:inline="text" >
+                        <i class="fa-solid fa-location-dot" style="color:green;"></i>
+                        [[${employ.location}]]
+                    </div>
+                    <div id="phone" th:inline="text" >
+                        <i class="fa-solid fa-phone" style="color:cornflowerblue;"></i>
+                        [[${employ.phone}]]
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div style="padding: 10px; border: 1px solid #eee;">
+
+                <div class="d-flex">
+                    <div style="margin-right: 30px;" >
+
+                        <h4><i class="fa-solid fa-heart" style="color:deeppink;"></i>제목 : </h4>
+                    </div>
+                    <div>
+                        <span th:inline="text" style="font-size: 20px;font-weight: bold;">[[${employ.title}]]</span>
+                    </div>
+                </div>
+
+                <div class="d-flex">
+                    <div style="margin-right: 30px;">
+                        <br>
+
+                        <h4><i class="fa-solid fa-check" style="color:#0A82FF;"></i>업무 : </h4>
+                    </div>
+
+                        <div style="display: flex; flex-direction: column; margin-right: 30px;">
+                            <img th:src="@{'/image/jobs/' + ${employ.job} + '.png'}" width="50px;" height="35px; " style="border-radius: 5px;">
+                            <span id="profile-job" >음식점</span>
+                        </div>
+                    <div style="margin-right: 30px;">
+                        <br>
+                        <h4><img src="/image/icon/clock.png" width="25px;" height="25px;">근무 시간 : </h4>
+                    </div>
+                    <div>
+                        <br>
+
+                        <div class="d-flex">
+                            <div th:inline="text" style="font-weight: bold;font-size: 20px;">
+                                [[${employ.start_time}]] ~ [[${employ.end_time}]]
+                            </div>
+                            <div style="margin-left: 20px"> <h5><b>까지</b></h5> </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="d-flex" style="margin-bottom: 30px;">
+                    <div style="margin-right: 30px;" >
+                        <h4><img src="/image/icon/money.png" width="25px;" height="25px;">급여</h4>
+                    </div>
+                    <div style="margin-right: 20px;">
+                        <span style="font-size: 20px;font-weight: bold;" th:inline="text">[[|${#numbers.formatInteger(employ.pay, 0, 'COMMA')} 원|]]</span>
+
+                    </div>
+                    <div class="form-check" style="margin-right: 15px;">
+                        <input class="form-check-input" type="checkbox" name="pay_type" value="hour" id="hour" th:checked="${employ.pay_type == 'hour'}">
+                        <label class="form-check-label" for="hour">시급</label>
+                    </div>
+                    <div class="form-check" style="margin-right: 15px;">
+                        <input class="form-check-input" type="checkbox" name="pay_type" value="day" id="day" th:checked="${employ.pay_type == 'day'}">
+                        <label class="form-check-label" for="day">일급</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="pay_type" value="month" id="month" th:checked="${employ.pay_type == 'month'}">
+                        <label class="form-check-label" for="month">월급</label>
+                    </div>
+                </div>
+
+                <div class="d-flex">
+                    <div style="margin-right: 30px;" >
+
+                        <h3><img src="/image/icon/content.png" width="25px;" height="25px;">내용</h3>
+                    </div>
+                    <div class="form-floating">
+                        <textarea  readonly class="form-control" name="content" th:text="${employ.content}" id="ff" style="height: 100px;width: 500px;"></textarea>
+                        <label for="ff">Comments</label>
+                    </div>
+
+
+                </div>
+
+
+
+
+                <div class="row">
+                    <div class="col-4">
+                        <br>
+                        <h3><img src="/image/icon/search.png" width="25px;" height="25px;">이런분을 모셔요!</h3>
+                    </div>
+                    <div class="col-8">
+                        <br>
+                        <div id="user-intro-box">
+                            <th:block th:each="item : ${employ.personalitys}">
+                                <span id="intro" th:text="${item.name}"></span>
+                            </th:block>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <br>
+                        <h3><img src="/image/icon/deadline.png" width="25px;" height="25px;">채용 마감일</h3>
+                    </div>
+                    <div class="col-8">
+                        <br>
+                        <span style="font-size: 26px; font-weight: bold;" th:text="${employ.deadline}"></span>
+                    </div>
+                </div>
+                </div>
+            <div class="d-flex">
+                    <div style="margin-right: 20px;">
+                <button type="button" class="btn btn-primary" onclick="goBack()" >목록</button>
+                <button type="button" class="btn btn-danger" onclick="goBack()" >채용완료</button>
+                    </div>
+
+
+                </div>
+
+        </div> <!--end of profile-box -->
+
+            <div class="employ-info" >
+            <div style="margin-top: 50px;height: 200px; width: 300px;
+                border: 1px solid #eee;padding: 20px; box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);">
+                <div style="font-weight: bold;font-size: 20px;margin-bottom: 20px;" th:inline="text">
+                    현재까지 <span style="font-size: 32px; color:red;">[[${employ.resumes.size()}]]</span> 명이 지원했어요!</div>
+                <div>
+                    <span class="deadline-label">채용 마감일까지</span>
+                    <span class="deadline"></span>
+                    <script th:inline="javascript">
+                        var date = [[${employ.deadline}]];
+                        console.log(date);
+                        var serverDate = new Date(date);
+
+                        // 현재 날짜 구하기
+                        var today = new Date();
+
+                        // 서버 날짜와 현재 날짜의 차이 계산
+                        var differenceInTime = serverDate.getTime() - today.getTime();
+                        var differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+
+                        // "D-00" 형식으로 출력
+                        var output = "D-" + (differenceInDays >= 0 ? differenceInDays : "00");
+                        console.log(output);
+
+                        $(".deadline").text(output);
+                    </script>
+                </div>
+            </div>
+        </div>
+            </div>
+    </div> <!--end of container -->
+</main>
+
+
+
+<div class="popup-user-view">
+    <i class="fa-solid fa-x" id="popup-user-view-out"></i>
+    <div class="user-profile-box">
+        <div style="margin-top: 30px; margin-bottom:30px; border-bottom: 1px solid #eee;">
+            <h1> 유저 프로필</h1>
+        </div>
+        <div class="row" style="padding:5px; width: 680px;margin-left: 10px;">
+            <div class="col-4 justify-content-center" style="background-color: white;">
+                <div id="profile-img" style="padding: 5px;  margin-bottom: 10px;">
+                    <!--                <img   width="150px" height="150px" style="border-radius:5px;">-->
+                </div>
+            </div>
+            <div id="text-info" class="col-8 justify-content-center" style="background-color:white;">
+                <div style="margin-top:20px;" id="user-name">이름</div>
+                <div id="age">
+                    <i class="fa-solid fa-user" id="gender-icon" style="color: hotpink;"></i>
+                    <span id="gender">
+                   </span>
+
+
+
+                </div>
+                <i class="fa-solid fa-location-dot" style="color:green;"></i>
+                <div id="location" style="display: inline-block" >
+
+                </div>
+
+                <div id="user-phone" style="">
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row" style="" >
+            <div class="col-4">
+                <br>
+                <h3><i class="fa-solid fa-heart" style="color:deeppink;"></i>희망업무</h3>
+            </div>
+            <div class="col-8 d-flex flex-wrap" id="jobtype">
+                <div id="wantjob" style="display: flex; flex-direction: row; flex-wrap: wrap; margin-right: 10px;">
+
+                    <span id="user-profile-job" ></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <br>
+                <h3><i class="fa-regular fa-clock"></i>희망시간대</h3>
+            </div>
+            <div class="col-8">
+                <br>
+                <div id="time-box"></div>
+
+
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <br>
+                <h3><img src="/image/icon/school.png" width="36" height="36">학력사항</h3>
+            </div>
+            <div class="col-8 d-flex">
+                <br>
+                <br>
+                <div id="edu" style="font-weight: bold;font-size: 20px;margin-right: 15px;margin-top: 30px;"></div>
+                <div id="degree" style="font-weight: bold;margin-top: 30px;" ></div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-4">
+                <br>
+                <h3><i class="fa-regular fa-face-laugh" style="color:dodgerblue;"></i>자기소개</h3>
+            </div>
+            <div class="col-8">
+                <br>
+                <div id="intro-box"></div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <br>
+                <h3><i class="fa-solid fa-comment" style="color:#ffcd39;"></i>한마디</h3>
+            </div>
+            <div class="col-8">
+                <label for="say" class="form-label"></label>
+                <textarea class="form-control" readonly id="say" rows="2" style="font-weight: bold;" ></textarea>
+
+            </div>
+        </div>
+        <div>
+            <button type="button" class="btn btn-danger" onclick="chat()" >채팅 보내기</button>
+
+        </div>
+    </div> <!--end of profile-box -->
+</div>
+
+<div class="popup_bg">
+
+</div>
+</body>
+</html>

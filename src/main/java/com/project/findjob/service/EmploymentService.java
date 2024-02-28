@@ -17,6 +17,7 @@ import java.util.Optional;
 public class EmploymentService {
     private final EmployRepository employRepository;
 
+//    공고 id와 유저id를 가지고 지원여부를 조회하는 메소드
     public boolean existById(Long employ_id,String userid){
         Optional<Employment> employmentOptional = employRepository.findById(employ_id);
         Employment employ = employmentOptional.get();

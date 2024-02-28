@@ -60,14 +60,14 @@ public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
             user.getRoles().add(userrole);
             userRepository.save(user);
             log.info("@# 신규회원 ==>");
-        }else {
-
-            log.info("#@ 기존 로그인 회원 ===>");
-            existData.setUseremail(oAuth2Response.getEmail());
-            userRepository.save(existData);
+            return new CustomOAuth2User(oAuth2Response,role,userid,false,username,"default.jpg",true);
         }
 
+            log.info("#@ 기존 로그인 회원 ===>");
+
+        return oAuth2User;
+
 //        User객체를 기반으로 Oauth2유저 객체 생성
-        return new CustomOAuth2User(oAuth2Response,role,userid,false,username,"default.jpg",true);
+
     }
 }

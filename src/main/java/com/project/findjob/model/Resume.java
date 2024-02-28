@@ -24,6 +24,9 @@ public class Resume {
     private String description;
     private String username;
     private String loc;
+    private String birthday;
+    private String gender;
+    private String phone;
 
 
     @ManyToMany

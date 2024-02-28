@@ -104,7 +104,9 @@ public class UserController {
             log.info("@# update_resume의 jobs ==>" + resume.getJobs());
             Optional<User> user = userRepository.findByUserid(resume.getUserid());
             User updateuser = user.get();
-
+            log.info("#@ 유저 이름 ==>"+resume.getGender());
+            log.info("#@ 유저 이름 ==>"+resume.getPhone());
+            resume.setUsername(updateuser.getUname());
             resume.setLoc(updateuser.getArea2());
             resume.setProfile_img(updateuser.getProfileurl());
             updateuser.setEnabled(true);
@@ -211,6 +213,7 @@ public class UserController {
         Store store = storeRepository.findByUserid(ownerId);
         String loc = store.getArea2();
         List<Resume> resumes = resumeService.findByLoc(loc);
+
         return resumes;
     }
 }

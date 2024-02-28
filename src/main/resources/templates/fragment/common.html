@@ -114,7 +114,7 @@
     <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height:100vh;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-            <span class="fs-4">돼찜 양산점</span>
+            <span class="fs-4"></span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-lg-2">
@@ -142,20 +142,15 @@
                   내 공고
                 </a>
             </li>
-            <li>
-                <a href="#" class="nav-link text-white" th:classappend="${menu eq 'menu4'}?'active'">
 
-                    지원현황
-                </a>
-            </li>
             <li>
-                <a href="/finduser" class="nav-link text-white" th:classappend="${menu eq 'menu5'}?'active'">
+                <a href="/finduser" class="nav-link text-white" th:classappend="${menu eq 'menu4'}?'active'">
 
                     직원찾기
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white" th:classappend="${menu eq 'menu6'}?'active'">
+                <a href="/owner/chat" class="nav-link text-white" th:classappend="${menu eq 'menu5'}?'active'">
 
                     메시지함
                 </a>

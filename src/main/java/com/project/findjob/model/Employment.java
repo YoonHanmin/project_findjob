@@ -3,6 +3,7 @@ package com.project.findjob.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,7 @@ public class Employment {
     private String start_time;
     private String end_time;
     private String time;
+    private LocalDate deadline;
 
 // Date타입 삽입전에 EntityManager가 해당 메소드 수행
     @PrePersist

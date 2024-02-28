@@ -404,6 +404,63 @@
                     <span class="to-add-iam" style="margin-left : 10px;">추가</span>
                 </div>
             </div>
+                <div class="row">
+                    <div class="col-4">
+                        <br>
+                        <h3><img src="/image/icon/school.png" width="36" height="36">학력사항</h3>
+                    </div>
+                    <div class="col-8 d-flex">
+                        <div style="width: 200px;">
+                        <select name="education" id="firstSelect" class="form-select">
+                            <option selected>선택</option>
+                            <option value="고등학교 졸업">고등학교 졸업</option>
+                            <option value="전문대(2·3년제) 졸업">전문대(2·3년제) 졸업</option>
+                            <option value="대학교(4년제) 졸업">대학교(4년제) 졸업</option>
+                        </select>
+                        </div>
+                        <div style="width: 200px;">
+                        <select id="secondSelect" name="degree" class="form-select">
+                            <option selected>선택</option>
+
+                        </select>
+                        </div>
+
+                        <script>
+                            $('#firstSelect').change(function() {
+                                var selectedValue = $(this).val(); // 첫 번째 select 박스의 선택된 값 가져오기
+                                var options = ''; // 두 번째 select 박스의 옵션들을 저장할 변수
+
+                                // 선택된 값에 따라 두 번째 select 박스의 옵션들을 동적으로 생성
+                                switch(selectedValue) {
+                                    case '고등학교 졸업':
+                                        options += '<option value="인문계">인문계</option>';
+                                        options += '<option value="실업계">실업계</option>';
+                                        options += '<option value="상업계">상업계</option>';
+                                        break;
+                                    case '전문대(2·3년제) 졸업':
+                                    case '대학교(4년제) 졸업':
+                                        options += '<option value="경영학과">경영학과</option>';
+                                        options += '<option value="기계공학과">기계공학과</option>';
+                                        options += '<option value="컴퓨터공학과">컴퓨터공학과</option>';
+                                        options += '<option value="사회복지학과">사회복지학과</option>';
+                                        options += '<option value="디자인학과">디자인학과</option>';
+                                        options += '<option value="상경계열">상경계열</option>';
+                                        options += '<option value="어문계열">어문계열</option>';
+                                        options += '<option value="공과계열">공과계열</option>';
+                                        options += '<option value="체능계열">예·체능계열</option>';
+                                        break;
+                                    default:
+                                        options += '<option selected>선택</option>'; // 기본값 설정
+                                }
+
+                                // 두 번째 select 박스의 옵션 변경
+                                $('#secondSelect').html(options);
+                            });
+
+
+                        </script>
+                    </div>
+                </div>
             <div class="row">
                 <div class="col-4">
                     <br>
@@ -421,6 +478,9 @@
                     <br>
                     <input name="userid" type="hidden" th:value="${#authentication.getPrincipal().getUserid()}">
                     <input name="profile_img" type="hidden" th:value="${#authentication.getPrincipal().getProfileurl()}">
+                    <input name="gender" type="hidden" th:value="${#authentication.getPrincipal().getGender()}">
+                    <input name="birthday" type="hidden" th:value="${#authentication.getPrincipal().getBirthday()}">
+                    <input name="phone" type="hidden" th:value="${#authentication.getPrincipal().getPhone()}">
                     <input type="submit" value="내 프로필 설정하기" id="profile-btn">
                 </div>
             </form>

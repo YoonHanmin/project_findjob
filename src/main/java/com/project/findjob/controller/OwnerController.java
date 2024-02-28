@@ -147,7 +147,7 @@ public class OwnerController {
 
         model.addAttribute("employ",employ);
 
-        return "/showEmploy";
+        return "owner/viewEmploy";
     }
     @GetMapping("/showEmploy/{id}")
     public String showEmploy2(@PathVariable("id")Long id, Model model,Authentication auth){
@@ -203,5 +203,10 @@ public class OwnerController {
             e.printStackTrace();
         }
         return result;
+    }
+
+    @GetMapping("/owner/chat")
+    public String chat(){
+        return "owner/chat";
     }
 }

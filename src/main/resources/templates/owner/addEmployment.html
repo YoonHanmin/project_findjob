@@ -16,7 +16,7 @@
         margin-left: 20%;
         margin-right: 30%;
         width: 60%;
-        height: 800px;
+        height: 900px;
         margin-top: 50px;
         border: 1px solid #eee;
         border-radius: 5px;
@@ -518,20 +518,35 @@
                         <input type="hidden" name="personality" id="introduce">
                         <span class="to-add-iam" style="margin-left : 10px;">추가</span>
                     </div>
-                    <div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-4">
                         <br>
-                        <input name="storeid" type="hidden" th:value="${store.id}">
-                        <input name="ownerid" type="hidden" th:value="${store.userid}">
-                        <input name="location" type="hidden" th:value="${store.address}">
-                        <input name="storename" type="hidden" th:value="${store.storename}">
-                        <input name="storeimg" type="hidden" th:value="${store.storeimg1}">
-                        <input name="area1" type="hidden" th:value="${store.area1}">
-                        <input name="phone" type="hidden" th:value="${store.phone}">
-                        <input name="area2" type="hidden" th:value="${store.area2}">
-                        <input type="reset" class="btn btn-primary" value="취소">
-                        <input type="submit" class="btn btn-primary" value="공고작성" id="profile-btn">
+                        <h3><img src="/image/icon/deadline.png" width="25px;" height="25px;">채용 마감일</h3>
+                    </div>
+                    <div class="col-8">
+                        <br>
+                            <input name="deadline" type="date" class="input-form-box">
                     </div>
                 </div>
+
+                <div>
+                    <br>
+                    <input name="storeid" type="hidden" th:value="${store.id}">
+                    <input name="ownerid" type="hidden" th:value="${store.userid}">
+                    <input name="location" type="hidden" th:value="${store.address}">
+                    <input name="storename" type="hidden" th:value="${store.storename}">
+                    <input name="storeimg" type="hidden" th:value="${store.storeimg1}">
+                    <input name="area1" type="hidden" th:value="${store.area1}">
+                    <input name="phone" type="hidden" th:value="${store.phone}">
+                    <input name="area2" type="hidden" th:value="${store.area2}">
+                    <input type="reset" class="btn btn-primary" value="취소">
+                    <input type="submit" class="btn btn-primary" value="공고작성" id="profile-btn">
+                </div>
+
+
             </form>
         </div> <!--end of profile-box -->
     </div> <!--end of container -->

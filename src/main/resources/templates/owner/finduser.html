@@ -21,14 +21,92 @@
     .find-user-filter-loc:hover{
         background-color: #bfd1ec;
     }
+    .profile-box{
+        padding: 10px;
+        width: 700px;
+        margin-top: 10px;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        background: white;
+    }
+    #name{
+        font-size: 30px;
+        font-weight: bold;
+
+    }
+
+    #intro{
+        border : 1px solid #84c1ff;
+        border-radius: 6px;
+        color : black;
+        background-color: #84c1ff;
+        margin-top : 30px;
+        margin-right: 10px;
+        height:90px ;
+        width: 130px;
+        cursor: pointer;
+    }
+
+    #time-box{
+        margin-left: 30px;
+    }
+    #time{
+        margin-right: 10px;
+        border : 1px solid #ffcd39;
+        border-radius: 6px;
+        color : black;
+        font-weight: bold;
+        background-color:#ffcd39;
+        margin-top : 30px;
+
+        height:80px ;
+        width: 300px;
+        cursor: pointer;
+    }
+
+    #profile-job{
+        margin-right: 5px;
+        text-align: center;
+        border : 1px solid #E6E6FA;
+        border-radius: 6px;
+        color : black;
+        font-weight: bold;
+        background-color:#E6E6FA;
+        cursor: pointer;
+    }
+
+    .popup-bg{
+        position: absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background: rgba(0,0,0,0.7);
+        display:none;
+        z-index: 1; /* z-index 값 설정 */
+    }
+    .popup-user-view{
+        padding: 30px;
+        position : absolute;
+        left : calc(50% - 300px);
+        top : calc(50% - 300px);
+        width: 800px;
+
+        background : white;
+        display:none;
+        border-radius: 8px;
+        z-index: 2; /* z-index 값 설정 (팝업은 배경 팝업보다 위에 있어야 함) */
+    }
+    .popup-user-view > #popup-user-view-out{
+        font-size: 2rem;
+        float: right;
+        margin-right:5px;
+        cursor: pointer;
+    }
 </style>
 <script th:inline="javascript">
     $(document).ready(function (){
-
         var ownerId = [[${ownerId}]];
-
-
-
     $("#loc").on("click",function (){
         console.log(ownerId);
         $.ajax({
@@ -46,12 +124,38 @@
 
                 // 받아온 List를 화면에 출력
                 resumes.forEach(function(resume) {
-                    var div = $('<div class="list-group-item list-group-item-action py-3 lh-sm" aria-current="true" style="border: 1px solid #eee;">');
+                    var div = $('<div class="list-group-item list-group-item-action py-3 lh-sm"  style="border: 1px solid #eee;">');
+
+
+                    // 상세내용 보기를위해 임시로 데이터값을 담아두는 공간
+                    var profile_img = $('<input type="hidden" name="profile_img" value="'+resume.profile_img+'">');
+                    var username = $('<input type="hidden" name="username" value="'+resume.username+'">');
+                    var description = $('<input type="hidden" name="description" value="'+resume.description+'">');
+                    var liketime = $('<input type="hidden" name="liketime" value="'+resume.liketime+'">');
+                    var loc = $('<input type="hidden" name="loc" value="'+resume.loc+'">');
+                    var gender = $('<input type="hidden" name="gender" value="'+resume.gender+'">');
+                    var birthday = $('<input type="hidden" name="birthday" value="'+resume.birthday+'">');
+                    var phone = $('<input type="hidden" name="phone" value="'+resume.phone+'">');
+                    var education = $('<input type="hidden" name="education" value="'+resume.education+'">');
+                    var degree = $('<input type="hidden" name="degree" value="'+resume.degree+'">');
+                    div.append(profile_img).append(username).append(description).append(liketime).append(loc).append(gender)
+                        .append(phone).append(birthday).append(education).append(degree);
+
+                    resume.jobs.forEach(function (job){
+                        var hiddenInput = $('<input type="hidden" id="j'+job.id+'" name="job" value="'+job.name+'">');
+                        div.append(hiddenInput);
+                    });
+                    resume.personalitys.forEach(function (personality){
+                        var hiddenInput2 = $('<input type="hidden" id="personality'+personality.id+'" name="personality" value="'+personality.name+'">');
+                        div.append(hiddenInput2);
+                    });
+
+
                     var listdiv = $('<div class="list d-flex">');
                     div.append(listdiv);
                     var profilediv = $('<div class="profile-img">');
                     listdiv.append(profilediv);
-                    var img = "<img src='/main/" + resume.profile_img + "' style='border-radius: 10px;width:80px;height:80px;'>";
+                    var img = "<img src='/main/" + resume.profile_img + "' style='border-radius: 10px;width:90px;height:90px;'>";
                     profilediv.append(img);
 
                     var profile_text_div = $('<div class="profile-text" style="margin-left: 30px;display: flex; flex-direction: column;">');
@@ -86,11 +190,129 @@
                 console.error("Error:", error);
             }
 
+        }); //end of ajax
+
+        });
+        // 유저 리스트에서 클릭시 프로필 출력
+
+        $('#profile-all').on('click', '.list-group-item', function() {
+
+            $("html, body").scrollTop(0);
+            $(".popup-bg").css({"display":"block"});
+            $(".popup-user-view").css({ "display": "block" });
+
+            var profile_img = $(this).find('input[name="profile_img"]').val();
+            var username = $(this).find('input[name="username"]').val();
+            var description = $(this).find('input[name="description"]').val();
+            var liketime = $(this).find('input[name="liketime"]').val();
+            var loc = $(this).find('input[name="loc"]').val();
+            var gender = $(this).find('input[name="gender').val();
+            var birthday = $(this).find('input[name="birthday').val();
+            var phone = $(this).find('input[name="phone').val();
+            var education = $(this).find('input[name="education').val();
+            var degree = $(this).find('input[name="degree').val();
+
+            var job = $(this).find('input[name="job"]').map(function() {
+                return {
+                    id: $(this).attr('id'),
+                    name: $(this).val()
+                };
+            }).get(); // job은 배열 형태로 가져옴
+
+            var personality = $(this).find('input[name="personality"]').map(function() {
+                return $(this).val();
+            }).get(); // personality는 배열 형태로 가져옴
+
+            if(gender=='M'){
+                gender = '남성'
+                $('#gender-icon').css("color","blue");
+            }else{ gender = '여성'
+                $('#gender-icon').css("color","hotpink");}
+            var birth = birthday+' ';
+                var age =birth.substring(0,4);
+
+
+
+            // 가져온 값들을 변수에 담거나 다른 처리를 함
+            // console.log("Profile Image:", profile_img);
+            // console.log("Username:", username);
+            // console.log("Description:", description);
+            // console.log("Liketime:", liketime);
+            // console.log("Location:", loc);
+            // console.log("Jobs:", job);
+            // console.log("Personality:", personality);
+
+            var profile = $("#profile-img")
+            // 이미지 초기화 시켜주기
+            profile.empty();
+
+
+            var img = "<img id='userimg' src='/main/" + profile_img + "' style='border-radius: 10px;width:180px;height:180px;'>";
+            profile.append(img);
+            $("#name").text(username);
+            $("#gender").text(gender+"  "+age+" 년생");
+            $("#location").text("부산광역시  "+loc);
+
+            var icon = $('<i class="fa-solid fa-phone" style="color:cornflowerblue;">');
+            $("#phone").empty().append(icon).append(phone);
+
+
+            // 희망 직무 배열 순환하며 출력
+            $("#wantjob").empty();
+            job.forEach(function (item){
+                    var jobjid = item.id;
+                    var jobid = jobjid.substring(1);
+                    var jobname = item.name;
+                var imagePath = "/image/jobs/" + jobid + ".png";
+                var imgElement = $('<img>').attr({
+                    src: imagePath,
+                    width: "65px",
+                    height: "65px",
+                    style: "border-radius: 5px; display: inline-block;"
+                });
+                var jobnames = $('<strong>').text(jobname);
+                $("#wantjob").append(imgElement).append(jobnames);
+            });
+
+        //     선호 시간대 표시
+            // 선택된 값들을 콘솔에 출력합니다.
+            $('#time-box').empty();
+            const days = ['월', '화', '수', '목', '금', '토', '일','상관없음']; // 요일 배열
+            const times = ['오전', '오후', '저녁', '전체']; // 시간대 배열
+            const timearray = liketime.split(',');
+            console.log(timearray);
+            timearray.forEach(function(item,index) {
+
+                const day = days[index]; // 해당하는 요일 가져오기
+                const time = times[timearray[index]-1]; // 해당하는 시간대 가져오기
+                const text = day + ' - ' + time; // 요일과 시간대를 합쳐서 출력할 텍스트 생성
+                // span 태그를 생성하고 text를 설정하여 #intro-box에 추가
+                const addSpan = $('<span>').attr('id', 'time').text(text);
+                $('#time-box').append(addSpan);
+            });
+
+            // 자기소개 출력
+            $('#intro-box').empty();
+            personality.forEach(function (item){
+                const addSpan = $('<span>').attr('id', 'intro').text(item);
+                $('#intro-box').append(addSpan);
+            });
+            $("#say").empty().val(description);
+            $("#edu").empty().append(education);
+            $("#degree").empty().append(degree);
+            console.log(education);
+
+
+
         });
 
+        $("#popup-user-view-out").click(function (){
 
+            $(".popup-bg").css({"display":"none"});
+            $(".popup-user-view").css({ "display": "none" });
+        });
     });
-    });
+
 </script>
 <body>
 
@@ -98,7 +320,7 @@
 </header>
 <main class="d-flex">
     <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
-        <nav  th:replace="~{fragment/common :: owner-nav(menu5)}">
+        <nav  th:replace="~{fragment/common :: owner-nav(menu4)}">
         </nav>
     </th:block>
 
@@ -131,116 +353,108 @@
     </div>
 </main>
 
-<!-- <div class="popup-profile-box">
-    <div class="profile-box">
-        <div style="margin-top: 30px; margin-bottom:30px; border-bottom: 1px solid #eee;">
-            <h1> 내 프로필 보기</h1>
-        </div>
-        <div class="row" style="">
-            <div class="col-4 justify-content-center" style="background-color: white;">
-                <div style="padding: 5px; margin-left: 20px; margin-bottom: 10px;">
-                    <img th:src="@{'/main/' + ${#authentication.getPrincipal().getProfileurl()}}"  width="150px" height="150px" style="border-radius:5px;">
-                </div>
+<div class="popup-user-view">
+    <i class="fa-solid fa-x" id="popup-user-view-out"></i>
+<div class="profile-box">
+    <div style="margin-top: 30px; margin-bottom:30px; border-bottom: 1px solid #eee;">
+        <h1> 유저 프로필</h1>
+    </div>
+    <div class="row" style="padding:5px; width: 680px;margin-left: 10px;">
+        <div class="col-4 justify-content-center" style="background-color: white;">
+            <div id="profile-img" style="padding: 5px;  margin-bottom: 10px;">
+<!--                <img   width="150px" height="150px" style="border-radius:5px;">-->
             </div>
-            <div class="col-8 justify-content-center" style="background-color:white;">
-                <div style="margin-top:20px;"id="name" th:text="${#authentication.getPrincipal().getUname()}">이름</div>
-                <div id="age">
-                   <span th:if="${#authentication.getPrincipal().getGender() == 'F'}">
-                 <i class="fa-solid fa-user" style="color: hotpink;"></i>
+        </div>
+        <div class="col-8 justify-content-center" style="background-color:white;">
+            <div style="margin-top:20px;" id="name">이름</div>
+            <div id="age">
+                <i class="fa-solid fa-user" id="gender-icon" style="color: hotpink;"></i>
+                <span id="gender">
                    </span>
-                    <span th:if="${#authentication.getPrincipal().getGender() == 'M'}">
-                     <i class="fa-solid fa-user" style="color: blue;"></i>
-                     </span>
-                    <span th:text="${#authentication.getPrincipal().getBirthday()}">
 
-                    </span>
-                    <span th:if="${#authentication.getPrincipal().getGender() == 'M'}">남성</span>
-                    <span th:if="${#authentication.getPrincipal().getGender() == 'F'}">여성</span>
+
+
+            </div>
+            <i class="fa-solid fa-location-dot" style="color:green;"></i>
+            <div id="location" style="display: inline-block" >
+
+            </div>
+
+            <div id="phone" style="">
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row" style="" >
+        <div class="col-4">
+            <br>
+            <h3><i class="fa-solid fa-heart" style="color:deeppink;"></i>희망업무</h3>
+        </div>
+        <div class="col-8 d-flex flex-wrap" id="jobtype">
+                <div id="wantjob" style="display: flex; flex-direction: row; flex-wrap: wrap; margin-right: 10px;">
+
+                    <span id="profile-job" ></span>
                 </div>
-                <div id="loc" th:inline="text" >
-                    <i class="fa-solid fa-location-dot" style="color:green;"></i>
-                    [[${#authentication.getPrincipal().getAddress()}]]
-                </div>
-                <div id="phone" th:inline="text" >
-                    <i class="fa-solid fa-phone" style="color:cornflowerblue;"></i>
-                    [[${#authentication.getPrincipal().getPhone()}]]
-                </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            <br>
+            <h3><i class="fa-regular fa-clock"></i>희망시간대</h3>
+        </div>
+        <div class="col-8">
+            <br>
+            <div id="time-box"></div>
 
 
-            </div>
 
         </div>
-        <div class="row">
-            <div class="col-4" style="background-color: white;">
-                <button type="button" id="change-profile">프로필사진 변경</button>
-            </div>
-            <div class="col-8" style="background-color: white;">
 
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <br>
+            <h3><img src="/image/icon/school.png" width="36" height="36">학력사항</h3>
+        </div>
+        <div class="col-8 d-flex">
+            <br>
+            <br>
+            <div id="edu" style="font-weight: bold;font-size: 20px;margin-right: 15px;margin-top: 30px;"></div>
+            <div id="degree" style="font-weight: bold;margin-top: 30px;" ></div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-4">
+            <br>
+            <h3><i class="fa-regular fa-face-laugh" style="color:dodgerblue;"></i>자기소개</h3>
+        </div>
+        <div class="col-8">
+            <br>
+            <div id="intro-box"></div>
 
         </div>
-        <div class="row">
-            <div class="col-12">
-                <br>
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <br>
+            <h3><i class="fa-solid fa-comment" style="color:#ffcd39;"></i>한마디</h3>
         </div>
-
-        <div class="row" style="" >
-            <div class="col-4">
-                <br>
-                <h3><i class="fa-solid fa-heart" style="color:deeppink;"></i>희망업무</h3>
-            </div>
-            <div class="col-8 d-flex flex-wrap" id="jobtype">
-
-                <th:block th:each="job : ${resume.getJobs()}">
-                    <div style="display: flex; flex-direction: column; margin-right: 10px;">
-                        <img th:src="@{'/image/jobs/'+${job.getId()+'.png'}}" width="80px;" height="80px;" style="border-radius: 5px;">
-                        <span id="profile-job" th:text="${job.getName()}"></span>
-                    </div>
-                </th:block>
-
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-4">
-                <br>
-                <h3><i class="fa-regular fa-clock"></i>희망시간대</h3>
-            </div>
-            <div class="col-8">
-                <br>
-                <div id="time-box"></div>
-
-
-
-            </div>
+        <div class="col-8">
+            <label for="say" class="form-label"></label>
+            <textarea class="form-control" readonly id="say" rows="2" ></textarea>
 
         </div>
-        <div class="row">
-            <div class="col-4">
-                <br>
-                <h3><i class="fa-regular fa-face-laugh" style="color:dodgerblue;"></i>자기소개</h3>
-            </div>
-            <div class="col-8">
-                <br>
-                <div id="intro-box"></div>
+    </div>
 
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <br>
-                <h3><i class="fa-solid fa-comment" style="color:#ffcd39;"></i>한마디</h3>
-            </div>
-            <div class="col-8">
-                <label for="exampleFormControlTextarea1" class="form-label"></label>
-                <textarea class="form-control" readonly id="exampleFormControlTextarea1" rows="2" th:text="${resume.description}"></textarea>
-
-            </div>
-        </div>
-
-    </div> --> <!--end of profile-box
+</div> <!--end of profile-box -->
 </div>
-<div class="popup-bg"></div> -->
+<div class="popup-bg">
+
+</div>
 </body>
 </html>
