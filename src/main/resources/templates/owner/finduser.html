@@ -21,6 +21,19 @@
     .find-user-filter-loc:hover{
         background-color: #bfd1ec;
     }
+    .find-user-filter-per{
+        padding: 5px;
+        border: 1px solid #FFDC46;
+        background-color: white;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 15px;
+        cursor: pointer;
+        margin-bottom: 5px;
+    }
+    .find-user-filter-per:hover{
+        background-color: #FFDC46;
+    }
     .profile-box{
         padding: 10px;
         width: 700px;
@@ -106,9 +119,13 @@
 </style>
 <script th:inline="javascript">
     $(document).ready(function (){
+
+
+
         var ownerId = [[${ownerId}]];
     $("#loc").on("click",function (){
         console.log(ownerId);
+        $(".find-user-filter-loc").css("background-color","#bfd1ec");
         $.ajax({
             url: '/finduser/loc', // AJAX 요청 보낼 엔드포인트
             type: 'GET', // GET 또는 POST 등 요청 타입 지정
@@ -178,12 +195,6 @@
                     $('#profile-all').append(div);
 
                 });
-
-
-
-
-
-
             },
             error: function(xhr, status, error) {
                 // 요청이 실패했을 때 수행할 작업
@@ -191,8 +202,27 @@
             }
 
         }); //end of ajax
-
         });
+
+    $("#per").click(function () {
+
+        $(".find-user-filter-per").css("background-color", "#FFDC46");
+        $.ajax({
+            url: '/finduser/per', // AJAX 요청 보낼 엔드포인트
+            type: 'GET', // GET 또는 POST 등 요청 타입 지정
+            data: {ownerId: ownerId}, // 요청 시 함께 보낼 데이터
+            success: function (response) {
+
+            },
+        });
+    });
+
+
+
+
+
+
+
         // 유저 리스트에서 클릭시 프로필 출력
 
         $('#profile-all').on('click', '.list-group-item', function() {
@@ -331,8 +361,14 @@
         </div>
 
         <div class="d-flex">
-            <div style="">
+            <div style="margin-right: 30px;">
             <span id="loc" class="find-user-filter-loc">가게랑 가까워요.</span>
+            </div>
+            <div style="">
+            <span id="per" class="find-user-filter-per">특성이 일치해요.</span>
+            </div>
+            <div style="">
+            <span id="search" class="find-user-filter-per">검색</span>
             </div>
         </div>
 

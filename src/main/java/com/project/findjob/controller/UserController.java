@@ -216,4 +216,21 @@ public class UserController {
 
         return resumes;
     }
+//    @GetMapping("/finduser/per")
+//    public @ResponseBody List<Resume> finduserPer(Model model,@RequestParam("ownerId") String ownerId){
+//       List<Employment> employments = employRepository.findByOwneridAndStatus(ownerId,"ing");
+//        for(Employment employ : employments){
+//            employ.getPersonalitys();
+//
+//        }
+//        return '';
+//    }
+
+    @GetMapping("/message")
+    public String message(Model model,Authentication auth){
+        String userid = auth.getName();
+        Resume resume = resumeRepository.findByUserid(userid);
+        model.addAttribute("resume",resume);
+        return "message";
+    }
 }

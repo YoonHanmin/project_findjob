@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragment/common :: head}">
+
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+    body{
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+</style>
+<body>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('#profile-all').on('click', '.list-group-item', function() {
+            var ownername = $(this).find('input[name="ownername"]').val();
+            console.log(ownername);
+            location.href='/chat/'+ownername;
+
+        });
+
+    });
+</script>
+<header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
+</header>
+<main class="d-flex">
+    <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
+        <nav  th:replace="~{fragment/common :: owner-nav(menu)}">
+        </nav>
+    </th:block>
+    <th:block sec:authorize="hasAuthority('ROLE_USER')">
+        <nav  th:replace="~{fragment/common :: user-nav(menu)}">
+        </nav>
+    </th:block>
+
+    <div class="container">
+        <div>
+            <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary" style="width: 380px;margin-top: 20px;">
+                <div class="d-flex" style="padding:10px; height:50px;border: 1px solid #eee;">
+                    <img class="bi pe-none me-2" src="/image/icon/people.png" width="30" height="24">
+                    <span class="fs-5 fw-semibold">내가 지원한 공고</span>
+                </div>
+                <div id="profile-all" class="list-group list-group-flush border-bottom scrollarea">
+                    <th:block th:each="employ : ${resume.employments}">
+                        <div class="list-group-item list-group-item-action py-3 lh-sm"  style="border: 1px solid #eee;">
+                            <div class="list d-flex">
+                                <div class="profile-img">
+                                    <img th:src="@{'/store/img/' + ${employ.storeimg}}" style='border-radius: 10px;width:90px;height:90px;'>
+                                    </div>
+                                <input type="hidden" name="ownername" th:value="${employ.ownername}">
+                                <div class="profile-text" style="margin-left: 30px;display: flex; flex-direction: column;">
+                                    <span style="font-weight: bold;font-size: 20px;" th:inline="text">[[${employ.title}]]</span>
+                                        <span th:inline="text"><i class='fa-solid fa-location-dot' style='color:green;'></i>[[${employ.storename}]]</span>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+</body>
+</html>

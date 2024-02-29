@@ -10,7 +10,8 @@
     }
     #ing{
     margin-right: 50px;
-    border-bottom: 4px solid black;
+        opacity: 0.5;
+
         cursor: pointer;
     }
     #ing:hover{
@@ -18,7 +19,7 @@
     }
     #end{
         color : black;
-        opacity: 0.5;
+        border-bottom: 4px solid black;
         cursor: pointer;
     }
     #end:hover{
@@ -28,8 +29,8 @@
 </style>
 <script>
     $(document).ready(function (){
-        $('#end').click(function (){
-            location.href='/owner/endEmploy';
+        $('#ing').click(function (){
+            location.href='/owner/myEmploy';
 
         });
 

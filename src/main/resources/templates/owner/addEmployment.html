@@ -537,6 +537,7 @@
                     <input name="storeid" type="hidden" th:value="${store.id}">
                     <input name="ownerid" type="hidden" th:value="${store.userid}">
                     <input name="location" type="hidden" th:value="${store.address}">
+                    <input name="ownername" type="hidden" th:value="${#authentication.getPrincipal().getUname()}">
                     <input name="storename" type="hidden" th:value="${store.storename}">
                     <input name="storeimg" type="hidden" th:value="${store.storeimg1}">
                     <input name="area1" type="hidden" th:value="${store.area1}">

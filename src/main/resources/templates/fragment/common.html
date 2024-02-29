@@ -150,7 +150,7 @@
                 </a>
             </li>
             <li>
-                <a href="/owner/chat" class="nav-link text-white" th:classappend="${menu eq 'menu5'}?'active'">
+                <a th:href="@{'/chat/'+${#authentication.getPrincipal().getUsername}}" class="nav-link text-white" th:classappend="${menu eq 'menu5'}?'active'">
 
                     메시지함
                 </a>
@@ -203,12 +203,7 @@
                    프로필 변경
                 </a>
             </li>
-            <li>
-                <a href="/finduser" class="nav-link text-white">
 
-                    공고찾기
-                </a>
-            </li>
             <li>
                 <a href="/user/myApply" class="nav-link text-white" th:classappend="${menu eq 'menu4'}?'active'">
 
@@ -216,7 +211,8 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+<!--                <a th:href="@{'/chat/'+${#authentication.getPrincipal().getUsername}}" class="nav-link text-white">-->
+                <a href="/message" class="nav-link text-white">
 
                     메시지함
                 </a>
@@ -225,10 +221,7 @@
         </ul>
         <hr>
         <div class="dropdown">
-            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                <strong>mdo</strong>
-            </a>
+
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
                 <li><a class="dropdown-item" href="#">New project...</a></li>
                 <li><a class="dropdown-item" href="#">Settings</a></li>
