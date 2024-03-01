@@ -135,10 +135,17 @@ public class OwnerController {
 
     @GetMapping("owner/myEmploy")
     public String myemploy(Model model,Authentication auth){
-        List<Employment> employ = employRepository.findByOwnerid(auth.getName());
+        List<Employment> employ = employRepository.findByOwneridAndStatus(auth.getName(),"ing");
         model.addAttribute("employ",employ);
 
         return "owner/myEmploy";
+    }
+    @GetMapping("owner/endEmploy")
+    public String endemploy(Model model,Authentication auth){
+        List<Employment> employ = employRepository.findByOwneridAndStatus(auth.getName(),"end");
+        model.addAttribute("employ",employ);
+
+        return "owner/endEmploy";
     }
     @GetMapping("owner/showEmploy/{id}")
     public String showEmploy(@PathVariable("id")Long id, Model model,Authentication auth){
@@ -181,6 +188,7 @@ public class OwnerController {
             Personality personality = personalityOptional.get();
             employment.getPersonalitys().add(personality);
         }
+        employment.setStatus("ing");
         employRepository.save(employment);
         return "main";
     }
@@ -205,8 +213,13 @@ public class OwnerController {
         return result;
     }
 
-    @GetMapping("/owner/chat")
-    public String chat(){
-        return "owner/chat";
+    @PostMapping("/owner/endEmploy/{employId}")
+    public ResponseEntity<String> endEmployment(@PathVariable("employId")Long id){
+        Optional<Employment> employment = employRepository.findById(id);
+        Employment employ = employment.get();
+        employ.setStatus("end");
+        employRepository.save(employ);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

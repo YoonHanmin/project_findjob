@@ -11,7 +11,7 @@
     .profile-box{
         display: flex;
         flex-direction: column;
-
+        box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
         padding: 10px;
         margin-left: 50px;
         margin-right: 50px;
@@ -92,7 +92,7 @@
         color: #fff;
     }
     .applicant-list{
-
+        box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
     }
 
     #time-box{
@@ -313,7 +313,27 @@
 
     function chat(){
         if(confirm("해당 지원자에게 채팅을 보내시겠습니까?")){
-            location.href='/owner/chat';
+            var userid = $('#user-name').text();
+            console.log(userid);
+            location.href='/chat/'+userid;
+        }
+    }
+    function choose() {
+        if (confirm("해당 지원자를 채용하시겠습니까?")) {
+            var id = $("input[name='employid']").val();
+            console.log(id);
+
+            $.ajax({
+                url: '/owner/endEmploy/' + id, // AJAX 요청 보낼 엔드포인트
+                type: 'POST', // GET 또는 POST 등 요청 타입 지정
+                data: {employId: id}, // 요청 시 함께 보낼 데이터
+                success: function (response) {
+                    alert("채용완료");
+                    history.back();
+                }
+
+        });
+
         }
     }
 </script>
@@ -351,7 +371,9 @@
                         <div id="profile-all" class="list-group list-group-flush border-bottom scrollarea">
                             <th:block th:each="resume : ${employ.resumes}">
                             <div class="list-group-item list-group-item-action py-3 lh-sm" style="border: 1px solid #eee;">
+
                                 <input type="hidden" name="profile_img" th:value="${resume.getProfile_img()}">
+                                <input type="hidden" name="userid" th:value="${resume.getUserid()}">
                                 <input type="hidden" name="username" th:value="${resume.getUsername()}">
                                 <input type="hidden" name="description" th:value="${resume.getDescription()}">
                                 <input type="hidden" name="liketime" th:value="${resume.getLiketime()}">
@@ -561,6 +583,9 @@
                 </div>
             </div>
         </div>
+
+
+
             </div>
     </div> <!--end of container -->
 </main>
@@ -664,8 +689,10 @@
 
             </div>
         </div>
+        <input type="hidden" name="employid" th:value="${employ.id}">
         <div>
             <button type="button" class="btn btn-danger" onclick="chat()" >채팅 보내기</button>
+            <button style="margin-left:470px; " type="button" class="btn btn-primary" onclick="choose()" >채용하기</button>
 
         </div>
     </div> <!--end of profile-box -->

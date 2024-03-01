@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragment/common :: head}">
+
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+body{
+font-family: 'Noto Sans KR', sans-serif;
+}
+.messenger-box{
+
+    width: 650px;
+    border: 1px solid #eee;
+    margin-top: 30px;
+    margin-left: 50px;
+}
+#msgArea{
+    display: flex;
+    flex-direction: column;
+
+}
+.messenger-header{
+    text-align: center;
+    height: 30px;
+    border-bottom: 2px solid #eee;
+    background-color: #bfd1ec;
+}
+</style>
+<script th:inline="javascript">
+    $(document).ready(function(){
+
+        const username = [[${#authentication.principal.uname}]];
+
+        $("#disconn").on("click", (e) => {
+           window.history.back();
+        })
+
+        $("#button-send").on("click", (e) => {
+            send();
+        });
+
+        const websocket = new WebSocket("ws://localhost:9999/ws/chat");
+
+        websocket.onmessage = onMessage;
+        websocket.onopen = onOpen;
+        websocket.onclose = onClose;
+
+        function send(){
+
+            let msg = document.getElementById("msg");
+            var name = $("#toName").val();
+            console.log(username + ":"+name+":"+msg.value);
+            // 소켓에 메시지 보냄
+            websocket.send(username +":"+msg.value);
+            msg.value = '';
+        }
+
+        //채팅창에서 나갔을 때
+        function onClose(evt) {
+            var str = username + ": 님이 방을 나가셨습니다.";
+            websocket.send(str);
+        }
+
+        // 채팅창에 들어왔을 때
+        function onOpen(evt) {
+            var name = $("#toName").val();
+            var str = username + ": 님이 입장하셨습니다.";
+            websocket.send(str);
+        }
+
+        function onMessage(msg) {
+            var data = msg.data;
+            var sessionId = null;
+            //데이터를 보낸 사람
+            var message = null;
+            var arr = data.split(":");
+
+            for(var i=0; i<arr.length; i++){
+                console.log('arr[' + i + ']: ' + arr[i]);
+            }
+            // arr[0]은 보낸사람, arr[1]은 메시지내용
+            // username은 로그인 세션에서 가져왔으므로 무조건 보내는사람
+            var cur_session = username;
+
+            //현재 세션에 로그인 한 사람
+            console.log("cur_session:" + cur_session);
+            sessionId = arr[0];
+            message = arr[1];
+
+            console.log("sessionID : " + sessionId);
+            console.log("cur_session : " + cur_session);
+
+            //로그인 한 클라이언트와 타 클라이언트를 분류하기 위함
+            if(sessionId == cur_session){ //내가 보낸 메시지
+                var str = "<div class='' style='width:200px;margin-left: 440px;display: block'>";
+                str += "<div class='alert alert-secondary' >";
+                str += "<b>" + sessionId + " : " + message + "</b>";
+                str += "</div></div>";
+                $("#msgArea").append(str);
+            }
+            else{ // 타 클라이언트가 보낸 메시지
+                var str = "<div class='' style='width:300px;display: block'>";
+                str += "<div class='alert alert-primary'>";
+                str += "<b>" + sessionId + " : " + message + "</b>";
+                str += "</div></div>";
+                $("#msgArea").append(str);
+            }
+        }
+    })
+</script>
+
+
+
+<body>
+
+<header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
+</header>
+<main class="d-flex">
+<th:block sec:authorize="hasAuthority('ROLE_OWNER')">
+<nav  th:replace="~{fragment/common :: owner-nav(menu5)}">
+</nav>
+</th:block>
+<th:block sec:authorize="hasAuthority('ROLE_USER')">
+<nav  th:replace="~{fragment/common :: user-nav(menu)}">
+</nav>
+</th:block>
+
+    <div class="container-fluid">
+        <div class="messenger-box">
+        <div class="messenger-header">
+            <label><b>채팅방</b></label>
+            <th:block th:if="${type eq 'origin'}">
+            <span th:inline="text">
+            <input type="hidden" id="toName" th:value="${chats.get(0).getToName()}+':'+${chats.get(0).getFromName()}">
+            [[${chats.get(0).getToName()}]] 와 [[${chats.get(0).getFromName()}]]의 채팅방</span>
+            </th:block>
+
+        </div>
+        <div>
+            <div id="msgArea" class="">
+                <th:block th:if="${type eq 'origin'}">
+                <th:block th:each="chat : ${chats}">
+                    <th:block th:if="${chat.fromName eq #authentication.getPrincipal().getUname()}">
+                    <div class='' style='width:200px;margin-left: 440px;display: block'>
+                        <span th:text="${chat.time}"></span>
+                        <div class='alert alert-secondary'>
+                            <span style="font-weight: bold" th:inline="text">[[${chat.fromName}]] : [[${chat.data}]]</span>
+                            </div>
+                    </div>
+                    </th:block>
+                    <th:block th:unless="${chat.fromName eq #authentication.getPrincipal().getUname()}">
+                        <div class='' style='width:300px;display: block'>
+                            <span th:text="${chat.time}"></span>
+                            <div class='alert alert-primary'>
+                                <span style="font-weight: bold" th:inline="text">[[${chat.fromName}]] : [[${chat.data}]]</span>
+                            </div>
+                        </div>
+                    </th:block>
+
+                </th:block>
+                </th:block>
+            </div>
+            <div class="">
+                <div class="input-group mb-3">
+                    <input type="text" id="msg" class="form-control" width="500px" aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-send">전송</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div>
+                <button class="btn btn-outline-primary" type="button" id="disconn">나가기</button>
+            </div>
+        </div>
+
+
+
+    </div>
+</main>
+</body>
+</html>

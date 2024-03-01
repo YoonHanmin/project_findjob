@@ -18,6 +18,7 @@ public class Employment {
     private String storename;
     private String ownerid;
     private String storeimg;
+    private String ownername;
     private String title;
     private String phone;
     private Long job;
@@ -33,6 +34,7 @@ public class Employment {
     private String end_time;
     private String time;
     private LocalDate deadline;
+    private String status;
 
 // Date타입 삽입전에 EntityManager가 해당 메소드 수행
     @PrePersist
