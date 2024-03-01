@@ -33,7 +33,6 @@ public class Resume {
             joinColumns = @JoinColumn(name="resume_id"),
             inverseJoinColumns = @JoinColumn(name="personality_id")
     )
-    //    user테이블에서 role 조회
     private List<Personality> personalitys = new ArrayList<>();
 
     @ManyToMany

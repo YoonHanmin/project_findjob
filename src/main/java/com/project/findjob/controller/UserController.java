@@ -222,7 +222,7 @@ public class UserController {
         return resumes;
     }
 //    @GetMapping("/finduser/per")
-//    public @ResponseBody List<Resume> finduserPer(Model model,@RequestParam("ownerId") String ownerId){
+//    public @ResponseBody List<Resume> finduserPer(Model model,@RequestParam("employId") String ownerId){
 //       List<Employment> employments = employRepository.findByOwneridAndStatus(ownerId,"ing");
 //        for(Employment employ : employments){
 //            employ.getPersonalitys();

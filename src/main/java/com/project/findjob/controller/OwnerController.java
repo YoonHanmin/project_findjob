@@ -1,14 +1,12 @@
 package com.project.findjob.controller;
 
-import com.project.findjob.model.Employment;
-import com.project.findjob.model.Personality;
-import com.project.findjob.model.Store;
-import com.project.findjob.model.User;
+import com.project.findjob.model.*;
 import com.project.findjob.repository.EmployRepository;
 import com.project.findjob.repository.PersonalityRepository;
 import com.project.findjob.repository.StoreRepository;
 import com.project.findjob.repository.UserRepository;
 import com.project.findjob.service.EmploymentService;
+import com.project.findjob.service.ResumeService;
 import com.project.findjob.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +38,7 @@ public class OwnerController {
     private final PersonalityRepository personalityRepository;
     private final EmploymentService employmentService;
     private final StoreService storeService;
+    private final ResumeService resumeService;
 //    내 가게 보기
     @GetMapping("/owner/store/{userid}")
     public String store(@PathVariable("userid")String userid, Model model){
@@ -153,6 +152,12 @@ public class OwnerController {
         Employment employ = employmentOptional.get();
 
         model.addAttribute("employ",employ);
+
+        List<Resume> resumes = resumeService.findPersonality(employ);
+        model.addAttribute("resumes",resumes);
+
+
+
 
         return "owner/viewEmploy";
     }
