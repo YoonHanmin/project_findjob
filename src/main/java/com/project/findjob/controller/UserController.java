@@ -82,7 +82,7 @@ public class UserController {
 //    프로필 수정
     @PostMapping("/user/profile")
     @Transactional
-    public String update(@RequestParam("job") List<Long>jobs,@RequestParam("personal")List<Long>persons, Resume resume){
+    public String update(@RequestParam("job") List<Long>jobs,@RequestParam("personal")List<Long>persons, Resume resume,Model model){
         log.info("@#넘어온 job 값1 ==>"+jobs.get(0));
 
         if(resumeRepository.existsByUserid(resume.getUserid())) { // 기존에 resume이 있으면 삭제하고 새로삽입
@@ -146,12 +146,17 @@ public class UserController {
     @GetMapping("/user/findjob")
     public String find(Model model,
                        @PageableDefault(size = 8) Pageable pageable,
-                       @RequestParam(required = false, defaultValue = "",name = "area1") String area1,
-                       @RequestParam(required = false, defaultValue = "",name = "area2") String area2,
-                       @RequestParam(required = false, defaultValue = "",name = "job") Long job,
-                       @RequestParam(required = false, defaultValue = "",name = "time") String time){
+                       @RequestParam(required = false,name = "area1") String area1,
+                       @RequestParam(required = false,name = "area2") String area2,
+                       @RequestParam(required = false,name = "job") Long job,
+                       @RequestParam(required = false,name = "time") String time){
 
-         Page<Employment> list = null;
+        if (area1 != null && area1.equals("")) {
+            area1 = null;
+            area2 = null;
+        }
+
+        Page<Employment> list = null;
         if(job==null){
             list  = employRepository.findByArea1ContainingAndArea2ContainingAndTimeContaining(area1,area2,time,pageable);
             int startPage = 1; // 1페이지부터 시작

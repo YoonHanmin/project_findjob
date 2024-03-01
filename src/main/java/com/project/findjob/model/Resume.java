@@ -27,8 +27,6 @@ public class Resume {
     private String birthday;
     private String gender;
     private String phone;
-
-
     @ManyToMany
     @JoinTable(
             name = "resume_personality",
