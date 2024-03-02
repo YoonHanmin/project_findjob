@@ -152,32 +152,41 @@ public class UserController {
                        @RequestParam(required = false,name = "job") Long job,
                        @RequestParam(required = false,name = "time") String time){
 
-        if (area1 != null && area1.equals("")) {
-            area1 = null;
-            area2 = null;
-        }
 
         Page<Employment> list = null;
-        if(job==null){
-            list  = employRepository.findByArea1ContainingAndArea2ContainingAndTimeContaining(area1,area2,time,pageable);
+        log.info("area1 ==>"+area1);
+        log.info("area2 ==>"+area2);
+        log.info("job ==>"+job);
+        log.info("time ==>"+time);
+        if(area1 == null && area2 == null && time == null && job == null){
+            list = employRepository.findAll(pageable);
             int startPage = 1; // 1페이지부터 시작
-            int endPage = list.getTotalPages(); //Page객체의 getTotalPages메소드를 통해 총 페이지수 구할수있음
-            model.addAttribute("startPage",startPage);
-            model.addAttribute("endPage",endPage);
-            model.addAttribute("list",list);
-            log.info("@# ajax성공!! ==> " + list.getTotalElements());
+            int endPage = list.getTotalPages();
+            model.addAttribute("startPage", startPage);
+            model.addAttribute("endPage", endPage);
+            model.addAttribute("list", list);
         }else {
-            list = employRepository.findByArea1ContainingAndArea2ContainingAndJobAndTimeContaining(area1, area2, job, time, pageable);
-            log.info("파라미터값 ==>" + job);
-            log.info("파라미터값 ==>" + time);
+
+            list = employRepository.findByArea1ContainingAndArea2ContainingAndTimeContaining(area1, area2, time, pageable);
             int startPage = 1; // 1페이지부터 시작
             int endPage = list.getTotalPages(); //Page객체의 getTotalPages메소드를 통해 총 페이지수 구할수있음
             model.addAttribute("startPage", startPage);
             model.addAttribute("endPage", endPage);
             model.addAttribute("list", list);
             log.info("@# ajax성공!! ==> " + list.getTotalElements());
-
         }
+//        }else {
+//            list = employRepository.findByArea1ContainingAndArea2ContainingAndJobAndTimeContaining(area1, area2, job, time, pageable);
+//            log.info("파라미터값 ==>" + job);
+//            log.info("파라미터값 ==>" + time);
+//            int startPage = 1; // 1페이지부터 시작
+//            int endPage = list.getTotalPages(); //Page객체의 getTotalPages메소드를 통해 총 페이지수 구할수있음
+//            model.addAttribute("startPage", startPage);
+//            model.addAttribute("endPage", endPage);
+//            model.addAttribute("list", list);
+//            log.info("@# ajax성공!! ==> " + list.getTotalElements());
+//
+//        }
 
         return "/user/findjob";
     }

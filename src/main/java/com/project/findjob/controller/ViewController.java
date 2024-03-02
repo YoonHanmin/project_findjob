@@ -50,7 +50,7 @@ public class ViewController {
 //        사장님
         Store store =  storeRepository.findByUserid(userid);
         Employment employ = employRepository.findByOwnerid(userid);
-        Long user = userRepository.count();
+        Long user = resumeRepository.count();
         List<Resume> resumeList = resumeRepository.findAll();
         model.addAttribute("resumeList",resumeList);
         model.addAttribute("employ",employ);
