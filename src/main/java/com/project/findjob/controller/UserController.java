@@ -7,6 +7,7 @@ import com.project.findjob.service.ResumeService;
 import com.project.findjob.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.metamodel.internal.EmbeddableInstantiatorPojoIndirecting;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -209,6 +210,9 @@ public class UserController {
     public String finduser(Model model,Authentication authentication){
         String ownerId = authentication.getName();
         model.addAttribute("ownerId",ownerId);
+        Employment employment = employRepository.findByOwnerid(ownerId);
+        Long employId = employment.getId();
+        model.addAttribute("employId",employId);
         log.info(ownerId);
         return "/owner/finduser";
     }
@@ -221,15 +225,14 @@ public class UserController {
 
         return resumes;
     }
-//    @GetMapping("/finduser/per")
-//    public @ResponseBody List<Resume> finduserPer(Model model,@RequestParam("employId") String ownerId){
-//       List<Employment> employments = employRepository.findByOwneridAndStatus(ownerId,"ing");
-//        for(Employment employ : employments){
-//            employ.getPersonalitys();
-//
-//        }
-//        return '';
-//    }
+    @GetMapping("/finduser/per")
+    public @ResponseBody List<Resume> finduserPer(Model model,@RequestParam("ownerId") String ownerId){
+       Employment employ = employRepository.findByOwnerid(ownerId);
+        List<Resume> resumes = resumeService.findPersonality(employ);
+
+        return resumes;
+    }
+
 
     @GetMapping("/message")
     public String message(Model model,Authentication auth){

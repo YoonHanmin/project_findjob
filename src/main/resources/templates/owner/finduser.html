@@ -145,6 +145,7 @@
 
 
                     // 상세내용 보기를위해 임시로 데이터값을 담아두는 공간
+                     var userid = $('<input type="hidden" name="userid" value="'+resume.userid+'">');
                     var profile_img = $('<input type="hidden" name="profile_img" value="'+resume.profile_img+'">');
                     var username = $('<input type="hidden" name="username" value="'+resume.username+'">');
                     var description = $('<input type="hidden" name="description" value="'+resume.description+'">');
@@ -202,20 +203,90 @@
             }
 
         }); //end of ajax
-        });
 
-    $("#per").click(function () {
-
-        $(".find-user-filter-per").css("background-color", "#FFDC46");
         $.ajax({
             url: '/finduser/per', // AJAX 요청 보낼 엔드포인트
             type: 'GET', // GET 또는 POST 등 요청 타입 지정
-            data: {ownerId: ownerId}, // 요청 시 함께 보낼 데이터
-            success: function (response) {
+            data: { ownerId: ownerId }, // 요청 시 함께 보낼 데이터
+            success: function(response) {
+                // 성공적으로 응답을 받았을 때 수행할 작업
+                console.log("Success:", response);
+                const resumes = response;
+<!--                console.log(resumes[0].profile_img);-->
 
+                // 새로운 데이터 중복누적 방지하기위해 비움
+                $('#profile-all2').empty();
+
+                // 받아온 List를 화면에 출력
+                resumes.forEach(function(resume) {
+                    var div_per = $('<div id="profile-per" class="list-group-item list-group-item-action py-3 lh-sm"  style="border: 1px solid #eee;">');
+
+
+                    // 상세내용 보기를위해 임시로 데이터값을 담아두는 공간
+                    var profile_img_per = $('<input type="hidden" name="profile_img_per" value="'+resume.profile_img+'">');
+                    var username_per = $('<input type="hidden" name="username_per" value="'+resume.username+'">');
+                    var userid_per = $('<input type="hidden" name="userid_per" value="'+resume.userid+'">');
+                    var description_per = $('<input type="hidden" name="description_per" value="'+resume.description+'">');
+                    var liketime_per = $('<input type="hidden" name="liketime_per" value="'+resume.liketime+'">');
+                    var loc_per = $('<input type="hidden" name="loc_per" value="'+resume.loc+'">');
+                    var gender_per = $('<input type="hidden" name="gender_per" value="'+resume.gender+'">');
+                    var birthday_per = $('<input type="hidden" name="birthday_per" value="'+resume.birthday+'">');
+                    var phone_per = $('<input type="hidden" name="phone_per" value="'+resume.phone+'">');
+                    var education_per = $('<input type="hidden" name="education_per" value="'+resume.education+'">');
+                    var degree_per = $('<input type="hidden" name="degree_per" value="'+resume.degree+'">');
+                    div_per.append(profile_img_per).append(username_per).append(description_per).append(liketime_per).append(loc_per).append(gender_per)
+                        .append(phone_per).append(birthday_per).append(education_per).append(degree_per);
+
+                    resume.jobs.forEach(function (job){
+                        var hiddenInput_per = $('<input type="hidden" id="j'+job.id+'" name="job_per" value="'+job.name+'">');
+                        div_per.append(hiddenInput_per);
+                    });
+                    resume.personalitys.forEach(function (personality){
+                        var hiddenInput2_per = $('<input type="hidden" id="personality'+personality.id+'" name="personality_per" value="'+personality.name+'">');
+                        div_per.append(hiddenInput2_per);
+                    });
+
+
+                    var listdiv_per = $('<div class="list d-flex">');
+                    div_per.append(listdiv_per);
+                    var profilediv_per = $('<div class="profile-img">');
+                    listdiv_per.append(profilediv_per);
+                    var img_per = "<img src='/main/" + resume.profile_img + "' style='border-radius: 10px;width:90px;height:90px;'>";
+                    profilediv_per.append(img_per);
+
+                    var profile_text_div_per = $('<div class="profile-text" style="margin-left: 30px;display: flex; flex-direction: column;">');
+                    listdiv_per.append(profile_text_div_per);
+
+                    var span1_per = $('<span>');
+                    span1_per.text(resume.username).css({"font-weight": "bold","font-size":"20px"});
+
+                    var span2_per = $('<span>');
+                    var icon_per =  "<i class='fa-solid fa-location-dot' style='color:green;'></i>";
+                    span2_per.text(resume.loc+" 거주");
+                    span2_per.append(icon_per);
+                    var span3_per = $('<span>');
+                    span3_per.text(resume.description);
+
+                    profile_text_div_per.append(span1_per);
+                    profile_text_div_per.append(span2_per);
+                    profile_text_div_per.append(span3_per);
+
+                    $('#profile-all2').append(div_per);
+
+                });
             },
+            error: function(xhr, status, error) {
+                // 요청이 실패했을 때 수행할 작업
+                console.error("Error:", error);
+            }
+
+        }); //end of ajax
+
+
+
         });
-    });
+
+
 
 
 
@@ -225,31 +296,32 @@
 
         // 유저 리스트에서 클릭시 프로필 출력
 
-        $('#profile-all').on('click', '.list-group-item', function() {
+        $('#profile-all2').on('click', '.list-group-item', function() {
 
             $("html, body").scrollTop(0);
             $(".popup-bg").css({"display":"block"});
             $(".popup-user-view").css({ "display": "block" });
 
-            var profile_img = $(this).find('input[name="profile_img"]').val();
-            var username = $(this).find('input[name="username"]').val();
-            var description = $(this).find('input[name="description"]').val();
-            var liketime = $(this).find('input[name="liketime"]').val();
-            var loc = $(this).find('input[name="loc"]').val();
-            var gender = $(this).find('input[name="gender').val();
-            var birthday = $(this).find('input[name="birthday').val();
-            var phone = $(this).find('input[name="phone').val();
-            var education = $(this).find('input[name="education').val();
-            var degree = $(this).find('input[name="degree').val();
-
-            var job = $(this).find('input[name="job"]').map(function() {
+            var profile_img = $(this).find('input[name="profile_img_per"]').val();
+            var username = $(this).find('input[name="username_per"]').val();
+            var description = $(this).find('input[name="description_per"]').val();
+            var liketime = $(this).find('input[name="liketime_per"]').val();
+            var loc = $(this).find('input[name="loc_per"]').val();
+            var gender = $(this).find('input[name="gender_per').val();
+            var birthday = $(this).find('input[name="birthday_per').val();
+            var phone = $(this).find('input[name="phone_per').val();
+            var education = $(this).find('input[name="education_per').val();
+            var degree = $(this).find('input[name="degree_per').val();
+            var userid_per =$(this).find('input[name="userid_per').val();
+           $("#userId").val(userid_per);
+            var job = $(this).find('input[name="job_per"]').map(function() {
                 return {
                     id: $(this).attr('id'),
                     name: $(this).val()
                 };
             }).get(); // job은 배열 형태로 가져옴
 
-            var personality = $(this).find('input[name="personality"]').map(function() {
+            var personality = $(this).find('input[name="personality_per"]').map(function() {
                 return $(this).val();
             }).get(); // personality는 배열 형태로 가져옴
 
@@ -336,13 +408,154 @@
 
         });
 
+        $('#profile-all').on('click', '.list-group-item', function() {
+
+$("html, body").scrollTop(0);
+$(".popup-bg").css({"display":"block"});
+$(".popup-user-view").css({ "display": "block" });
+
+var profile_img = $(this).find('input[name="profile_img"]').val();
+var username = $(this).find('input[name="username"]').val();
+var description = $(this).find('input[name="description"]').val();
+var liketime = $(this).find('input[name="liketime"]').val();
+var loc = $(this).find('input[name="loc"]').val();
+var gender = $(this).find('input[name="gender').val();
+var birthday = $(this).find('input[name="birthday').val();
+var phone = $(this).find('input[name="phone').val();
+var education = $(this).find('input[name="education').val();
+var degree = $(this).find('input[name="degree').val();
+var userid = $(this).find('input[name="userid').val();
+  $("#userId").val(userid);
+
+var job = $(this).find('input[name="job"]').map(function() {
+    return {
+        id: $(this).attr('id'),
+        name: $(this).val()
+    };
+}).get(); // job은 배열 형태로 가져옴
+
+var personality = $(this).find('input[name="personality"]').map(function() {
+    return $(this).val();
+}).get(); // personality는 배열 형태로 가져옴
+
+if(gender=='M'){
+    gender = '남성'
+    $('#gender-icon').css("color","blue");
+}else{ gender = '여성'
+    $('#gender-icon').css("color","hotpink");}
+var birth = birthday+' ';
+    var age =birth.substring(0,4);
+
+
+
+// 가져온 값들을 변수에 담거나 다른 처리를 함
+// console.log("Profile Image:", profile_img);
+// console.log("Username:", username);
+// console.log("Description:", description);
+// console.log("Liketime:", liketime);
+// console.log("Location:", loc);
+// console.log("Jobs:", job);
+// console.log("Personality:", personality);
+
+var profile = $("#profile-img")
+// 이미지 초기화 시켜주기
+profile.empty();
+
+
+var img = "<img id='userimg' src='/main/" + profile_img + "' style='border-radius: 10px;width:180px;height:180px;'>";
+profile.append(img);
+$("#name").text(username);
+$("#gender").text(gender+"  "+age+" 년생");
+$("#location").text("부산광역시  "+loc);
+
+var icon = $('<i class="fa-solid fa-phone" style="color:cornflowerblue;">');
+$("#phone").empty().append(icon).append(phone);
+
+
+// 희망 직무 배열 순환하며 출력
+$("#wantjob").empty();
+job.forEach(function (item){
+        var jobjid = item.id;
+        var jobid = jobjid.substring(1);
+        var jobname = item.name;
+    var imagePath = "/image/jobs/" + jobid + ".png";
+    var imgElement = $('<img>').attr({
+        src: imagePath,
+        width: "65px",
+        height: "65px",
+        style: "border-radius: 5px; display: inline-block;"
+    });
+    var jobnames = $('<strong>').text(jobname);
+    $("#wantjob").append(imgElement).append(jobnames);
+});
+
+//     선호 시간대 표시
+// 선택된 값들을 콘솔에 출력합니다.
+$('#time-box').empty();
+const days = ['월', '화', '수', '목', '금', '토', '일','상관없음']; // 요일 배열
+const times = ['오전', '오후', '저녁', '전체']; // 시간대 배열
+const timearray = liketime.split(',');
+console.log(timearray);
+timearray.forEach(function(item,index) {
+
+    const day = days[index]; // 해당하는 요일 가져오기
+    const time = times[timearray[index]-1]; // 해당하는 시간대 가져오기
+    const text = day + ' - ' + time; // 요일과 시간대를 합쳐서 출력할 텍스트 생성
+    // span 태그를 생성하고 text를 설정하여 #intro-box에 추가
+    const addSpan = $('<span>').attr('id', 'time').text(text);
+    $('#time-box').append(addSpan);
+});
+
+// 자기소개 출력
+$('#intro-box').empty();
+personality.forEach(function (item){
+    const addSpan = $('<span>').attr('id', 'intro').text(item);
+    $('#intro-box').append(addSpan);
+});
+$("#say").empty().val(description);
+$("#edu").empty().append(education);
+$("#degree").empty().append(degree);
+console.log(education);
+
+
+
+});
+
+
+
+
+
         $("#popup-user-view-out").click(function (){
 
             $(".popup-bg").css({"display":"none"});
             $(".popup-user-view").css({ "display": "none" });
         });
     });
+ function chat(){
+        if(confirm("해당 지원자에게 채팅을 보내시겠습니까?")){
+            var userid = $('#name').text();
+            console.log(userid);
+            location.href='/chat/'+userid;
+        }
+    }
+    function choose() {
+        if (confirm("해당 지원자를 채용하시겠습니까?")) {
+            var id = $("input[name='employId']").val();
+            console.log(id);
 
+            $.ajax({
+                url: '/owner/endEmploy/' + id, // AJAX 요청 보낼 엔드포인트
+                type: 'POST', // GET 또는 POST 등 요청 타입 지정
+                data: {employId: id}, // 요청 시 함께 보낼 데이터
+                success: function (response) {
+                    alert("채용완료");
+                    history.back();
+                }
+
+        });
+
+        }
+    }
 </script>
 <body>
 
@@ -362,21 +575,17 @@
 
         <div class="d-flex">
             <div style="margin-right: 30px;">
-            <span id="loc" class="find-user-filter-loc">가게랑 가까워요.</span>
+            <span id="loc" class="find-user-filter-loc">인재 찾기</span>
             </div>
-            <div style="">
-            <span id="per" class="find-user-filter-per">특성이 일치해요.</span>
-            </div>
-            <div style="">
-            <span id="search" class="find-user-filter-per">검색</span>
-            </div>
+
         </div>
 
-        <div>
+        <div style="display:flex; flex-direction:row;">
+        <div style="margin-right:30px;">
             <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary" style="width: 380px;margin-top: 20px;">
                 <div class="d-flex" style="padding:10px; height:50px;border: 1px solid #eee;">
                     <img class="bi pe-none me-2" src="/image/icon/people.png" width="30" height="24">
-                    <span class="fs-5 fw-semibold">매력만점 인재 리스트</span>
+                    <span class="fs-5 fw-semibold">가게와 가까운 이력서 리스트</span>
                 </div>
                 <div id="profile-all" class="list-group list-group-flush border-bottom scrollarea">
 
@@ -386,6 +595,24 @@
                 </div>
             </div>
         </div>
+
+        <div>
+            <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary" style="width: 380px;margin-top: 20px;">
+                <div class="d-flex" style="padding:10px; height:50px;border: 1px solid #eee;">
+                    <img class="bi pe-none me-2" src="/image/icon/people.png" width="30" height="24">
+                    <span class="fs-5 fw-semibold">올리신 공고와 딱 맞는 이력서 리스트</span>
+                </div>
+                <div id="profile-all2" class="list-group list-group-flush border-bottom scrollarea">
+
+
+
+
+                </div>
+            </div>
+        </div>
+        </div>
+
+
     </div>
 </main>
 
@@ -486,7 +713,13 @@
 
         </div>
     </div>
+    <input type="hidden" name="employId" th:value="${employId}">
+    <input type="hidden" name="userId">
+    <div>
+        <button type="button" class="btn btn-danger" onclick="chat()" >채팅 보내기</button>
+        <button style="margin-left:470px; " type="button" class="btn btn-primary" onclick="choose()" >채용하기</button>
 
+    </div>
 </div> <!--end of profile-box -->
 </div>
 <div class="popup-bg">

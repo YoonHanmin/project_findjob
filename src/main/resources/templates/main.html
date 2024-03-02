@@ -8,6 +8,29 @@
 body{
 font-family: 'Noto Sans KR', sans-serif;
 }
+
+    #main1,#main3,#main4 {
+    font-weight: bold;
+    font-size:32px;
+    color : red;
+    }
+    #main2 {
+    font-weight: bold;
+    font-size:32px;
+    color : red;
+    }
+ #intro,#intro2{
+        margin-right: 5px;
+        border : 1px solid #E6E6FA;
+        border-radius: 6px;
+        color : black;
+        background-color:#E6E6FA;
+        margin-top : 30px;
+        font-weight: bold;
+        height:80px ;
+        width: 300px;
+        cursor: pointer;
+    }
 </style>
 <body>
 
@@ -24,7 +47,142 @@ font-family: 'Noto Sans KR', sans-serif;
 </th:block>
 
     <div class="container">
+
+<!--        사장님 화면 -->
+        <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
+            <div style="margin-top:30px;border-bottom:1px solid #eee;">
+            <div style="font-weight: bold;font-size: 20px;margin-bottom: 20px;">
+                어서오세요,
+                <th:block th:if="${store != null}">
+        <span id="main1" th:inline="text"> [[${store.storename}]] </span>
+                사장님!
+                </th:block>
+                <th:block th:if="${store eq null}">
+                가게를 등록하고 다양한 인재들을 채용해보세요!
+                사장님!
+                </th:block>
+            </div>
+            <div style="font-weight: bold;font-size: 20px;margin-bottom: 20px;">
+                현재 채용을 기다리는 <span id="main2" th:inline="text"> [[${user}]]  </span>
+                명의 인재들이 이력서를 등록하였습니다.
+            </div>
+            </div>
+
+            <div style="margin-top:30px; border:1px solid #eee;">
+                <div class="resumeList">
+                     <div class="row wrap">
+                            <th:block th:each="resume : ${resumeList}">
+
+
+                                    <input type="hidden" name="profile_img" th:value="${resume.getProfile_img()}">
+                                    <input type="hidden" name="userid" th:value="${resume.getUserid()}">
+                                    <input type="hidden" name="username" th:value="${resume.getUsername()}">
+                                    <input type="hidden" name="description" th:value="${resume.getDescription()}">
+                                    <input type="hidden" name="liketime" th:value="${resume.getLiketime()}">
+                                    <input type="hidden" name="loc" th:value="${resume.getLoc()}">
+                                    <input type="hidden" name="gender" th:value="${resume.getGender()}">
+                                    <input type="hidden" name="phone" th:value="${resume.getPhone()}">
+                                    <input type="hidden" name="birthday" th:value="${resume.getBirthday()}">
+                                    <input type="hidden" name="education" th:value="${resume.getEducation()}">
+                                    <input type="hidden" name="degree" th:value="${resume.getDegree()}">
+                                    <th:block th:each="job : ${resume.jobs}">
+
+                                        <input type="hidden" name="job" th:value="${job.id}+${job.name}">
+                                    </th:block>
+                                    <th:block th:each="personality : ${resume.personalitys}">
+                                        <input type="hidden" id="personality4" name="personality"  th:value="${personality.name}">
+                                    </th:block>
+
+                                <div class="col-lg-4">
+                                    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                                        <div class="col p-4 d-flex flex-column position-static">
+
+                                            <strong class="d-inline-block mb-2 text-primary-emphasis" th:inline="text">
+                                                [[${resume.education}]]
+                                            </strong>
+
+                                            <h3 th:text="${resume.username}" class="mb-0"></h3>
+                                            <div class="mb-1 text-body-secondary" th:inline="text">
+                                                <i class="fa-solid fa-location-dot" style="color:green;"></i>
+                                                [[${resume.loc}]] 거주</div>
+                                            <p class="card-text mb-auto" th:text="${resume.description}"></p>
+                                            <div id="intro-box">
+                                                <th:block th:each="item : ${resume.personalitys}">
+                                                    <span id="intro" th:text="${item.name}"></span>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto d-none d-lg-block">
+                                            <div class="profile-img">
+                                                <img th:src="@{'/main/'+${resume.getProfile_img()}}" style="border-radius: 10px; max-width: 200px; height: 200px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+
+
+                        </div>
+                    </div>
+                </div>
+        </th:block>
+
+
+        <!-- 지원자 화면 -->
+        <th:block sec:authorize="hasAuthority('ROLE_USER')">
+            <div style="margin-top:30px;border-bottom:1px solid #eee;">
+                <div style="font-weight: bold;font-size: 20px;margin-bottom: 20px;">
+                    어서오세요,
+
+                    <th:block th:if="${not resume}">
+                        이력서를 등록하고 다양한 일자리를 구해보세요!
+
+                    </th:block>
+                </div>
+                <div style="font-weight: bold;font-size: 20px;margin-bottom: 20px;">
+                    현재 지원자님을 기다리는 <span id="main4" th:inline="text"> [[${employCount}]]  </span>
+                    개의 채용공고가 올라와있습니다!
+                </div>
+            </div>
+        </th:block>
+
+        <div style="margin-top:30px; border:1px solid #eee;">
+            <div class="resumeList">
+                <div class="row wrap">
+                    <th:block th:each="employ : ${employList}">
+
+
+                        <div class="col-lg-6">
+                            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                                <div class="col p-4 d-flex flex-column position-static">
+
+                                    <strong class="d-inline-block mb-2 text-primary-emphasis" th:inline="text">
+                                        [[${employ.storename}]]
+                                    </strong>
+
+                                    <h3 th:text="${employ.title}" class="mb-0"></h3>
+                                    <div class="mb-1 text-body-secondary" th:inline="text">
+                                        <i class="fa-solid fa-location-dot" style="color:green;"></i>
+                                        [[${employ.location}]] </div>
+                                    <p class="card-text mb-auto" th:text="${employ.content}"></p>
+                                    <div id="intro-box2">
+                                        <th:block th:each="item : ${employ.personalitys}">
+                                            <span id="intro2" th:text="${item.name}"></span>
+                                        </th:block>
+                                    </div>
+                                </div>
+                                <div class="col-auto d-none d-lg-block">
+                                    <div class="profile-img">
+                                        <img th:src="@{'/findjob/img/'+${employ.storeimg}}" style="border-radius: 10px; max-width: 200px; height: 200px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+
+
     </div>
+
 </main>
 </body>
 </html>

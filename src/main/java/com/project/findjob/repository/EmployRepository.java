@@ -13,6 +13,7 @@ public interface EmployRepository extends JpaRepository<Employment,Long> {
     Page<Employment> findByArea1ContainingAndArea2ContainingAndTimeContaining(String area1, String area2,String time, Pageable pageable);
     Page<Employment> findByArea1ContainingOrArea2ContainingOrJobOrTimeContaining(String area1, String area2,Long job,String time, Pageable pageable);
 
+    Employment findByOwnerid(String ownerid);
 
 
 }
