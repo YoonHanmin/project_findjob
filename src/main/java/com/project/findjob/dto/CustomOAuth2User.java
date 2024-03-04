@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Data
 public class CustomOAuth2User implements OAuth2User {
-    public CustomOAuth2User(OAuth2Response oAuth2Response, String role,String userid,boolean enabled,String uname,String profileurl,boolean social) {
+    public CustomOAuth2User(OAuth2Response oAuth2Response, String role,String userid,boolean enabled,String uname,String profileurl,boolean social,String gender) {
         this.oAuth2Response = oAuth2Response;
         this.userid = userid;
         this.role = role;
@@ -19,6 +19,8 @@ public class CustomOAuth2User implements OAuth2User {
         this.uname = uname;
         this.profileurl = profileurl;
         this.social = social;
+        this.gender = gender;
+
     }
 
     private final OAuth2Response oAuth2Response;
@@ -29,6 +31,7 @@ public class CustomOAuth2User implements OAuth2User {
     private String profileurl;
     private String phone;
     private Boolean social;
+    private String gender;
 
 
 

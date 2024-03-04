@@ -1,10 +1,7 @@
 package com.project.findjob.controller;
 
 import com.project.findjob.model.*;
-import com.project.findjob.repository.EmployRepository;
-import com.project.findjob.repository.PersonalityRepository;
-import com.project.findjob.repository.StoreRepository;
-import com.project.findjob.repository.UserRepository;
+import com.project.findjob.repository.*;
 import com.project.findjob.service.EmploymentService;
 import com.project.findjob.service.ResumeService;
 import com.project.findjob.service.StoreService;
@@ -39,6 +36,8 @@ public class OwnerController {
     private final EmploymentService employmentService;
     private final StoreService storeService;
     private final ResumeService resumeService;
+    private final ChatRepository chatRepository;
+    private final ChatListRepository chatListRepository;
 //    내 가게 보기
     @GetMapping("/owner/store/{userid}")
     public String store(@PathVariable("userid")String userid, Model model){
@@ -152,7 +151,7 @@ public class OwnerController {
         Employment employ = employmentOptional.get();
 
         model.addAttribute("employ",employ);
-
+        model.addAttribute("employId",id);
         List<Resume> resumes = resumeService.findPersonality(employ);
         model.addAttribute("resumes",resumes);
 
@@ -161,6 +160,23 @@ public class OwnerController {
 
         return "owner/viewEmploy";
     }
+
+    @GetMapping("owner/messageList")
+    public String msgList(Model model,Authentication auth){
+        User user = (User) auth.getPrincipal();
+        String uname = user.getUname();
+//        채팅방 불러오기
+        List<ChatList> chatList = chatListRepository.findByFromName(uname);
+        for(ChatList chatlist : chatList){
+            Chat chat = chatRepository.findTopByChatListIdOrderByIdDesc(chatlist.getId());
+            chatlist.setLastchat(chat.getData());
+            chatlist.setTime(chat.getTime());
+            chatListRepository.save(chatlist);
+        }
+        model.addAttribute("chatList",chatList);
+        return "owner/messageList";
+    }
+
     @GetMapping("/showEmploy/{id}")
     public String showEmploy2(@PathVariable("id")Long id, Model model,Authentication auth){
         Optional<Employment> employmentOptional = employRepository.findById(id);
@@ -226,5 +242,8 @@ public class OwnerController {
         employRepository.save(employ);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+// 이름으로 프로필사진 출력
+
 
 }

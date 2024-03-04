@@ -1,25 +1,27 @@
 package com.project.findjob.model;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
 @Entity
-@Slf4j
 @Data
-public class Chat {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ChatList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String toName;
     private String fromName;
-    private String data;
+    private Long employId;
+    private String lastchat;
     private Timestamp time;
-    private Long chatListId;
-    private boolean readchat;
 }

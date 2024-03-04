@@ -55,9 +55,12 @@ public class SecurityConfig {
 //                .httpBasic((auth)-> auth.disable());
         http
                 .oauth2Login(oauth2 -> oauth2
+//                        네이버 OAuth2.0 인증 api 접속
                         .loginPage("/login/oauth2/code/naver")
                         .clientRegistrationRepository(customClientRegistrationRepo.clientRegistrationRepository())
-                        .authorizedClientService(customOAuth2AuthorizedClientService.oAuth2AuthorizedClientService(jdbcTemplate, customClientRegistrationRepo.clientRegistrationRepository()))
+                        .authorizedClientService(customOAuth2AuthorizedClientService.oAuth2AuthorizedClientService
+                                (jdbcTemplate, customClientRegistrationRepo.clientRegistrationRepository()))
+//                        customOAuth2UserService를 사용하여 사용자 정보를 설정
                         .userInfoEndpoint((userInfoEndpointConfig)-> userInfoEndpointConfig.userService(customOAuth2UserService))
                         .defaultSuccessUrl("/main")
                 );

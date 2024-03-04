@@ -314,8 +314,9 @@
     function chat(){
         if(confirm("해당 지원자에게 채팅을 보내시겠습니까?")){
             var userid = $('#user-name').text();
+            var employid = $("input[name='employid']").val();
             console.log(userid);
-            location.href='/chat/'+userid;
+            location.href='/chat/'+userid+"/"+employid;
         }
     }
     function choose() {

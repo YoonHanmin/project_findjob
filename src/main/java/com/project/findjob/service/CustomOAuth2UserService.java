@@ -45,6 +45,8 @@ public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
         String userid = parts[0];
 
         String username = oAuth2Response.getName();
+        String gender = oAuth2Response.getGender();
+
         log.info("네이버 이름은 ===>>"+username);
         User existData = userRepository.findByUname(username);
         if(existData==null){
@@ -54,13 +56,15 @@ public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
             user.setSocial(true);
             user.setUname(oAuth2Response.getName());
             user.setProfileurl("default.jpg");
+            user.setGender(gender);
+
             user.setUseremail(oAuth2Response.getEmail());
             Role userrole = new Role();
             userrole.setId(1L); // ROLE_USER
             user.getRoles().add(userrole);
             userRepository.save(user);
             log.info("@# 신규회원 ==>");
-            return new CustomOAuth2User(oAuth2Response,role,userid,false,username,"default.jpg",true);
+            return new CustomOAuth2User(oAuth2Response,role,userid,false,username,"default.jpg",true,gender);
         }
 
             log.info("#@ 기존 로그인 회원 ===>");

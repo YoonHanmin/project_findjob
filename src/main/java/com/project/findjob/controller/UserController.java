@@ -7,7 +7,6 @@ import com.project.findjob.service.ResumeService;
 import com.project.findjob.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.metamodel.internal.EmbeddableInstantiatorPojoIndirecting;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -42,6 +41,8 @@ public class UserController {
     private final EmployRepository employRepository;
     private final EmploymentService employmentService;
     private final StoreRepository storeRepository;
+    private final ChatRepository chatRepository;
+    private final ChatListRepository chatListRepository;
     // 아이디 중복확인
     @GetMapping("/regist/exists/{userid}")
     @ResponseBody
@@ -219,7 +220,7 @@ public class UserController {
     public String finduser(Model model,Authentication authentication){
         String ownerId = authentication.getName();
         model.addAttribute("ownerId",ownerId);
-        Employment employment = employRepository.findByOwnerid(ownerId);
+       Employment employment = employRepository.findByOwnerid(ownerId);
         Long employId = employment.getId();
         model.addAttribute("employId",employId);
         log.info(ownerId);
@@ -249,5 +250,21 @@ public class UserController {
         Resume resume = resumeRepository.findByUserid(userid);
         model.addAttribute("resume",resume);
         return "message";
+    }
+
+    @GetMapping("user/messageList")
+    public String msgList(Model model,Authentication auth){
+        User user = (User) auth.getPrincipal();
+        String uname = user.getUname();
+//        채팅방 불러오기
+        List<ChatList> chatList = chatListRepository.findByToName(uname);
+        for(ChatList chatlist : chatList){
+            Chat chat = chatRepository.findTopByChatListIdOrderByIdDesc(chatlist.getId());
+            chatlist.setLastchat(chat.getData());
+            chatlist.setTime(chat.getTime());
+            chatListRepository.save(chatlist);
+        }
+        model.addAttribute("chatList",chatList);
+        return "user/messageList";
     }
 }

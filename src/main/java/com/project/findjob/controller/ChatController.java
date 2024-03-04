@@ -2,7 +2,9 @@ package com.project.findjob.controller;
 
 
 import com.project.findjob.model.Chat;
+import com.project.findjob.model.ChatList;
 import com.project.findjob.model.User;
+import com.project.findjob.repository.ChatListRepository;
 import com.project.findjob.repository.ChatRepository;
 import com.project.findjob.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,25 +24,57 @@ import java.util.Optional;
 public class ChatController {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
+    private final ChatListRepository chatListRepository;
 
-    @GetMapping("/chat/{userid}")
-    public String chatGET(@PathVariable("userid") String userid, Model model, Authentication auth){
+    @GetMapping("/chat/{userid}/{employid}")
+    public String chatGET(@PathVariable("userid") String userid,@PathVariable("employid")String employid, Model model, Authentication auth){
         String name = auth.getName();
         Optional<User> userOptional = userRepository.findByUserid(name);
         User user = userOptional.get();
-        String fromId = user.getUname();
-        String toId = userid;
+
+
+        User toUser = userRepository.findByUname(userid);
+        String username = toUser.getUname();
+        log.info("@# username ==<"+username);
+        String fromId = user.getUname(); // 세션값에서 꺼내온 이름
+        String toId = userid; // 쿼리스트링의 채팅 상대방
+        String temp = "";
+//        유저일경우 사장,유저명 바꿈(chatList는 사장기준)
+        if(user.getType().equals("user")){
+            temp = fromId;
+            fromId = toId;
+            toId = temp;
+        }
+
+        if(!chatListRepository.existsByFromNameAndToName(fromId,toId)){
+            ChatList chatList = new ChatList();
+            chatList.setFromName(fromId);
+            chatList.setToName(toId);
+            chatList.setEmployId(Long.parseLong(employid));
+            chatListRepository.save(chatList);
+        }
         String toId2 = fromId;
         String fromId2 = toId;
+
+        if(user.getType().equals("user")){
+            temp = fromId;
+            toId2 = toId;
+            fromId2 = fromId;
+        }
+
         List<Chat> chats =  chatRepository.findByToNameAndFromNameOrToNameAndFromNameOrderByIdAsc(toId,fromId,toId2,fromId2);
         if(chats.isEmpty()){
             model.addAttribute("type","new");
+            model.addAttribute("uname",username);
+            model.addAttribute("employid",employid);
             return "chat";
         }
         log.info("@# chatGet() 실행");
         log.info("@# chats ==>"+ chats);
         model.addAttribute("type","origin");
         model.addAttribute("chats",chats);
+        model.addAttribute("uname",username);
+        model.addAttribute("employid",employid);
         return "chat";
     }
 

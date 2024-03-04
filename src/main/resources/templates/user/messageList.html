@@ -13,7 +13,7 @@
 <script th:inline="javascript">
     $(document).ready(function() {
         $('#profile-all').on('click', '.list-group-item', function() {
-            var userid = $(this).find('input[name="ownername"]').val();
+            var userid = $(this).find('input[name="fromname"]').val();
             var employid = $(this).find('input[name="employid"]').val();
             console.log(userid);
             console.log(employid);
@@ -40,20 +40,24 @@
             <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary" style="width: 380px;margin-top: 20px;">
                 <div class="d-flex" style="padding:10px; height:50px;border: 1px solid #eee;">
                     <img class="bi pe-none me-2" src="/image/icon/people.png" width="30" height="24">
-                    <span class="fs-5 fw-semibold">내가 지원한 공고</span>
+                    <span class="fs-5 fw-semibold">메시지함</span>
                 </div>
                 <div id="profile-all" class="list-group list-group-flush border-bottom scrollarea">
-                    <th:block th:each="employ : ${resume.employments}">
+                    <th:block th:each="item : ${chatList}">
                         <div class="list-group-item list-group-item-action py-3 lh-sm"  style="border: 1px solid #eee;">
                             <div class="list d-flex">
                                 <div class="profile-img">
-                                    <img th:src="@{'/store/img/' + ${employ.storeimg}}" style='border-radius: 10px;width:90px;height:90px;'>
+
+                                    <img th:src="@{'/profile/' + ${item.fromName}}" style='border-radius: 10px;width:90px;height:90px;'>
                                     </div>
-                                <input type="hidden" name="ownername" th:value="${employ.ownername}">
-                                <input type="hidden" name="employid" th:value="${employ.id}">
+                                <input type="hidden" name="toname" th:value="${item.toName}">
+                                <input type="hidden" name="fromname" th:value="${item.fromName}">
+                                <input type="hidden" name="employid" th:value="${item.employId}">
                                 <div class="profile-text" style="margin-left: 30px;display: flex; flex-direction: column;">
-                                    <span style="font-weight: bold;font-size: 20px;" th:inline="text">[[${employ.title}]]</span>
-                                        <span th:inline="text"><i class='fa-solid fa-location-dot' style='color:green;'></i>[[${employ.storename}]]</span>
+                                    <span style="font-weight: bold;font-size: 20px;" th:inline="text">[[${item.fromName}]]</span>
+                                    <span style="font-size: 24px; color:#0b5ed7;" th:inline="text">[[${item.lastchat}]]</span>
+                                    <span style="font-size: 16px;" th:text="${#dates.format(item.time, 'M/d (E) a h:mm')}"></span>
+
                                 </div>
                             </div>
                         </div>

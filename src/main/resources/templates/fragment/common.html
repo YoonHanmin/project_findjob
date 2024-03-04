@@ -150,7 +150,7 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{'/chat/'+${#authentication.getPrincipal().getUsername}}" class="nav-link text-white" th:classappend="${menu eq 'menu5'}?'active'">
+                <a href="owner/messageList" class="nav-link text-white" th:classappend="${menu eq 'menu5'}?'active'">
 
                     메시지함
                 </a>
@@ -212,7 +212,7 @@
             </li>
             <li>
 <!--                <a th:href="@{'/chat/'+${#authentication.getPrincipal().getUsername}}" class="nav-link text-white">-->
-                <a href="/message" class="nav-link text-white">
+                <a th:href="@{/user/messageList}" class="nav-link text-white">
 
                     메시지함
                 </a>

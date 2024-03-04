@@ -10,37 +10,61 @@
     }
 </style>
 <body>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('#profile-all').on('click', '.list-group-item', function() {
+            var userid = $(this).find('input[name="ownername"]').val();
+            var employid = $(this).find('input[name="employid"]').val();
+            console.log(userid);
+            console.log(employid);
+            location.href='/showEmploy/'+employid;
 
+        });
+
+    });
+</script>
 <header class="p-3 mb-3 border-bottom" th:replace="~{fragment/common :: menu(home)}">
 </header>
 <main class="d-flex">
-
+    <th:block sec:authorize="hasAuthority('ROLE_OWNER')">
+        <nav  th:replace="~{fragment/common :: owner-nav(menu)}">
+        </nav>
+    </th:block>
     <th:block sec:authorize="hasAuthority('ROLE_USER')">
-        <nav  th:replace="~{fragment/common :: user-nav(menu4)}">
+        <nav  th:replace="~{fragment/common :: user-nav(menu)}">
         </nav>
     </th:block>
 
-    <div class="container">
-        <div style="margin-top: 10px;border-bottom: 1px solid #eee;padding: 10px;margin-bottom: 30px;">
-            <h3> <img src="/image/icon/speaker.png" width="40px;" height="40px;">내가 지원한 공고</h3>
-        </div>
-        <div style="">
-            <table class="table table-hover text-center">
-                <tr>
-                    <th>공고번호</th>
-                    <th>제목</th>
-                    <th>가게명</th>
-                </tr>
+    <div class="container-fluid">
+        <div>
+            <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-body-tertiary" style="width: 380px;margin-top: 20px;">
+                <div class="d-flex" style="padding:10px; height:50px;border: 1px solid #eee;">
+                    <img class="bi pe-none me-2" src="/image/icon/people.png" width="30" height="24">
+                    <span class="fs-5 fw-semibold">내가 지원한 공고</span>
+                </div>
+                <div id="profile-all" class="list-group list-group-flush border-bottom scrollarea">
+                    <th:block th:each="employ : ${resume.employments}">
+                        <div class="list-group-item list-group-item-action py-3 lh-sm"  style="border: 1px solid #eee;">
+                            <div class="list d-flex">
+                                <div class="profile-img">
+                                    <img th:src="@{'/store/img/' + ${employ.storeimg}}" style='border-radius: 10px;width:90px;height:90px;'>
+                                    </div>
+                                <input type="hidden" name="ownername" th:value="${employ.ownername}">
+                                <input type="hidden" name="employid" th:value="${employ.id}">
+                                <div class="profile-text" style="margin-left: 30px;display: flex; flex-direction: column;">
+                                    <span style="font-weight: bold;font-size: 20px;" th:inline="text">[[${employ.title}]]</span>
+                                        <span th:inline="text"><i class='fa-solid fa-location-dot' style='color:green;'></i>[[${employ.storename}]]</span>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
 
-                <th:block th:each="item : ${resume.getEmployments()}">
-                    <tr>
-                        <td th:text="${item.id}"></td>
-                        <td th:inline="text"><a style="text-decoration: none;font-weight: bold;" th:href="@{'/showEmploy/'+${item.id}}">[[${item.title}]]</a></td>
-                        <td th:text="${item.storename}"></td>
-                    </tr>
-                </th:block>
-            </table>
+
+
+                </div>
+            </div>
         </div>
+
     </div>
 </main>
 </body>

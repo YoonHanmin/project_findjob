@@ -40,71 +40,94 @@ font-family: 'Noto Sans KR', sans-serif;
             send();
         });
 
-        const websocket = new WebSocket("ws://localhost:9999/ws/chat");
+        $("#msg").on("keypress", function(event) {
+            if (event.which === 13) { // Enter 키의 keyCode 값은 13입니다.
+                send();
+            }
+        });
+        var fromname = username;
+        var toname = $("#toName").val();
+        var employid = $("#employId").val();
+
+        const websocket = new WebSocket("ws://localhost:9999/ws/chat?toName="+toname+ "&fromName=" + username + "&employId=" + employid);
 
         websocket.onmessage = onMessage;
         websocket.onopen = onOpen;
         websocket.onclose = onClose;
 
         function send(){
-
-            let msg = document.getElementById("msg");
+            let msg = $("#msg").val();
+            console.log(msg);
             var name = $("#toName").val();
+            console.log("name ==> "+name);
+            var employid = $("#employId").val();
+            var data = { fromName : username, toName : name, message : msg ,employId : employid};
             console.log(username + ":"+name+":"+msg.value);
             // 소켓에 메시지 보냄
-            websocket.send(username +":"+msg.value);
+            websocket.send(JSON.stringify(data));
             msg.value = '';
         }
 
         //채팅창에서 나갔을 때
         function onClose(evt) {
-            var str = username + ": 님이 방을 나가셨습니다.";
-            websocket.send(str);
+            var name = $("#toName").val();
+            var employid = $("#employId").val();
+            var str = { toName : name, fromName : username , message : username + ": 님이 퇴장하셨습니다." ,employId : employid } ;
+            websocket.send(JSON.stringify(str));
         }
 
         // 채팅창에 들어왔을 때
         function onOpen(evt) {
-            var name = $("#toName").val();
-            var str = username + ": 님이 입장하셨습니다.";
-            websocket.send(str);
+            // var employid = $("#employId").val();
+            // var name = $("#toName").val();
+            // console.log(name);
+            // var str = { toName : name, fromName : username , message : username + ": 님이 입장하셨습니다." ,employId : employid} ;
+            //
+            // websocket.send(JSON.stringify(str));
+            $(".read").text('');
         }
 
+        // 메시지가 도착했을때
         function onMessage(msg) {
-            var data = msg.data;
-            var sessionId = null;
+            $(".read").text('');
+            console.log("삭제!!");
+            var data = JSON.parse(msg.data);
+            console.log(data);
+            var from = data.fromName;
+            var to = data.toName;
             //데이터를 보낸 사람
-            var message = null;
-            var arr = data.split(":");
+            var message = data.message;
 
-            for(var i=0; i<arr.length; i++){
-                console.log('arr[' + i + ']: ' + arr[i]);
-            }
-            // arr[0]은 보낸사람, arr[1]은 메시지내용
-            // username은 로그인 세션에서 가져왔으므로 무조건 보내는사람
             var cur_session = username;
-
             //현재 세션에 로그인 한 사람
             console.log("cur_session:" + cur_session);
-            sessionId = arr[0];
-            message = arr[1];
-
-            console.log("sessionID : " + sessionId);
+            console.log("sessionID : " + from);
             console.log("cur_session : " + cur_session);
 
+            // var isRecipientOnline = data.isRecipientOnline;
+            // if(isRecipientOnline){
+            //     $("#read").empty();
+            // }
+
+
+
             //로그인 한 클라이언트와 타 클라이언트를 분류하기 위함
-            if(sessionId == cur_session){ //내가 보낸 메시지
+            if(from == cur_session){ //내가 보낸 메시지
                 var str = "<div class='' style='width:200px;margin-left: 440px;display: block'>";
+                str += "<div class='d-flex' style='align-items: flex-end;'>";
+                str += "<div><span class='read' style='font-size: 20px; font-weight: bold; color:#ffcd39;'>1</span></div>"
                 str += "<div class='alert alert-secondary' >";
-                str += "<b>" + sessionId + " : " + message + "</b>";
+                str += "<b>" + from + " : " + message + "</b>";
                 str += "</div></div>";
                 $("#msgArea").append(str);
             }
             else{ // 타 클라이언트가 보낸 메시지
                 var str = "<div class='' style='width:300px;display: block'>";
                 str += "<div class='alert alert-primary'>";
-                str += "<b>" + sessionId + " : " + message + "</b>";
+                str += "<b>" + from + " : " + message + "</b>";
                 str += "</div></div>";
                 $("#msgArea").append(str);
+
             }
         }
     })
@@ -132,10 +155,11 @@ font-family: 'Noto Sans KR', sans-serif;
             <label><b>채팅방</b></label>
             <th:block th:if="${type eq 'origin'}">
             <span th:inline="text">
-            <input type="hidden" id="toName" th:value="${chats.get(0).getToName()}+':'+${chats.get(0).getFromName()}">
             [[${chats.get(0).getToName()}]] 와 [[${chats.get(0).getFromName()}]]의 채팅방</span>
             </th:block>
 
+            <input type="hidden" id="toName" th:value="${uname}">
+            <input type="hidden" id="employId" th:value="${employid}">
         </div>
         <div>
             <div id="msgArea" class="">
@@ -143,15 +167,18 @@ font-family: 'Noto Sans KR', sans-serif;
                 <th:block th:each="chat : ${chats}">
                     <th:block th:if="${chat.fromName eq #authentication.getPrincipal().getUname()}">
                     <div class='' style='width:200px;margin-left: 440px;display: block'>
-                        <span th:text="${chat.time}"></span>
-                        <div class='alert alert-secondary'>
+                        <span style="font-size: 16px;" th:text="${#dates.format(chat.time, 'M/d (E) a h:mm')}"></span>
+                        <div class="d-flex" style="align-items: flex-end;">
+                        <div  th:unless="${chat.readchat}"><span class="read" style="font-size: 20px; font-weight: bold; color:#ffcd39;">1</span></div>
+                            <div class='alert alert-secondary'>
                             <span style="font-weight: bold" th:inline="text">[[${chat.fromName}]] : [[${chat.data}]]</span>
                             </div>
+                        </div>
                     </div>
                     </th:block>
                     <th:block th:unless="${chat.fromName eq #authentication.getPrincipal().getUname()}">
                         <div class='' style='width:300px;display: block'>
-                            <span th:text="${chat.time}"></span>
+                            <span style="font-size: 16px;" th:text="${#dates.format(chat.time, 'M/d (E) a h:mm')}"></span>
                             <div class='alert alert-primary'>
                                 <span style="font-weight: bold" th:inline="text">[[${chat.fromName}]] : [[${chat.data}]]</span>
                             </div>
