@@ -13,7 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=y9v5nz40pr"></script>
-
+    <script src="/js/sse.js"></script>
 </head>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
@@ -34,6 +34,7 @@
 <body>
 <header class="p-3 mb-3 border-bottom" style=" margin-bottom: 0 !important; display: flex; flex-direction: row; " th:fragment="menu(v_menu)">
     <div>
+        <input type="hidden" name="userid" th:value="${#authentication.getName()}">
         <a href="/main"><img src="/image/Logo.JPG" width="200px;" height="60px;"></a>
     </div>
     <div class="container">
@@ -60,6 +61,34 @@
 
 
 <!--            권한이 있으면 -->
+
+
+            <button style="margin-right: 20px;" id="alarm" type="button" class="btn btn-secondary position-relative">
+                <i class="fa-regular fa-bell" style="font-weight: bold;font-size: 20px;"></i>
+            </button>
+
+            <div class="popup-alarm" style="position : absolute; left : 1250px; top :10px; width : 300px; background : white; display:none; z-index: 2; ">
+                <i class="fa-solid fa-x" id="popup-alarm-out" style=" font-size: 2rem; float: right; margin-right:5px; cursor: pointer;"></i>
+                <div style="height:40px; font-weight:bold; font-size:20px; background-color:white; ">
+                    <span id="new_notify" style="padding : 5px; margin-bottom:10px;"><img src='/image/bell2.jpg' style="width:25px; height:25px;margin-right:5px;">새로온 소식</span>
+                    <div class="popup_notify_approval" style="cursor:pointer;height:40px;width:300px; font-weight:bold; font-size:14px; text-align:center;border:1px solid #eee; background-color:white; display:flex; flex-direction: row;">
+                        <div  style="margin-left:5px; margin-top:5px;"><img src='/image/msg.png' style="width:25px; height:25px;margin-right:5px;"></div>
+                        <div style="margin-left:5px; margin-top:5px;">
+                            <th:block th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+                                <a style="text-decoration: none;" th:href="@{user/messageList}"> 메시지가 도착했어요!</a>
+                            </th:block>
+                            <th:block th:if="${#authorization.expression('hasRole(''ROLE_OWNER'')')}">
+                                <a  style="text-decoration: none;" th:href="@{owner/messageList}"> 메시지가 도착했어요!</a>
+                            </th:block>
+
+                    </div>
+            </div>
+            </div>
+            </div>
+
+
+
+
             <div style="margin-right: 10px;">
             <span th:style="${'font-weight:bold;font-size:20px'}" th:text="${#authentication.getPrincipal().getUname()}">사용자</span>
                 <th:block th:if="${#authentication.getPrincipal().getSocial()}">

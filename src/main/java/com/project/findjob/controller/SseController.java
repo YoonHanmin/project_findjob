@@ -17,7 +17,7 @@ public class SseController {
     private final NotificationService notificationService;
 
     @GetMapping(value = "/connect/{userid}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter connect(@PathVariable String userid,
+    public SseEmitter connect(@PathVariable (name = "userid")String userid,
                               @RequestHeader(value="Last-Event-ID",required = false,defaultValue = "")String lastEventId){
 
         return notificationService.subscribe(userid, lastEventId);

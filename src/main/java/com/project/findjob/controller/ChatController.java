@@ -40,29 +40,33 @@ public class ChatController {
         String toId = userid; // 쿼리스트링의 채팅 상대방
         String temp = "";
 //        유저일경우 사장,유저명 바꿈(chatList는 사장기준)
-        if(user.getType().equals("user")){
-            temp = fromId;
-            fromId = toId;
-            toId = temp;
-        }
+        if(user.getType().equals("user")){ // user일 경우
+            if(!chatListRepository.existsByFromNameAndToName(toId,fromId)){
+                ChatList chatList = new ChatList();
+                chatList.setFromName(fromId);
+                chatList.setToName(toId);
+                chatList.setEmployId(Long.parseLong(employid));
+                chatListRepository.save(chatList);
+            }
+        }else { // owner일 경우
 
-        if(!chatListRepository.existsByFromNameAndToName(fromId,toId)){
-            ChatList chatList = new ChatList();
-            chatList.setFromName(fromId);
-            chatList.setToName(toId);
-            chatList.setEmployId(Long.parseLong(employid));
-            chatListRepository.save(chatList);
+            if (!chatListRepository.existsByFromNameAndToName(fromId, toId)) {
+                ChatList chatList = new ChatList();
+                chatList.setFromName(fromId);
+                chatList.setToName(toId);
+                chatList.setEmployId(Long.parseLong(employid));
+                chatListRepository.save(chatList);
+            }
         }
         String toId2 = fromId;
         String fromId2 = toId;
-
+        List<Chat> chats = null;
         if(user.getType().equals("user")){
-            temp = fromId;
-            toId2 = toId;
-            fromId2 = fromId;
-        }
+            chats = chatRepository.findByToNameAndFromNameOrToNameAndFromNameOrderByIdAsc(fromId, toId, fromId2, toId2);
+        }else {
 
-        List<Chat> chats =  chatRepository.findByToNameAndFromNameOrToNameAndFromNameOrderByIdAsc(toId,fromId,toId2,fromId2);
+            chats = chatRepository.findByToNameAndFromNameOrToNameAndFromNameOrderByIdAsc(toId, fromId, toId2, fromId2);
+        }
         if(chats.isEmpty()){
             model.addAttribute("type","new");
             model.addAttribute("uname",username);

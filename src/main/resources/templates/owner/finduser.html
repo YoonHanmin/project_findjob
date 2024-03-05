@@ -534,8 +534,9 @@ console.log(education);
  function chat(){
         if(confirm("해당 지원자에게 채팅을 보내시겠습니까?")){
             var userid = $('#name').text();
+            var employid = $('input[name="employId"]').val();
             console.log(userid);
-            location.href='/chat/'+userid;
+            location.href='/chat/'+userid+'/'+employid;
         }
     }
     function choose() {

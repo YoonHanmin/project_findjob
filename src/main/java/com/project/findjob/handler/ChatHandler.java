@@ -8,6 +8,7 @@ import com.project.findjob.model.User;
 import com.project.findjob.repository.ChatListRepository;
 import com.project.findjob.repository.ChatRepository;
 import com.project.findjob.repository.UserRepository;
+import com.project.findjob.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class ChatHandler extends TextWebSocketHandler {
     private final ChatRepository chatRepository;
     private final ChatListRepository chatListRepository;
     private final UserRepository userRepository;
-
+    private final NotificationService notificationService;
 //    현재 소켓에 연결된 session을 담는 리스트
     private static List<WebSocketSession>list = new ArrayList<>();
 
@@ -80,7 +81,9 @@ public class ChatHandler extends TextWebSocketHandler {
 //            sess.sendMessage(new TextMessage(node.toString()));
 //            log.info("리스트 출력 ==> " + sess.getPrincipal().getName());
 //        }
-
+        User touser = userRepository.findByUname(toName);
+        String toid = touser.getUserid();
+        notificationService.sendEvent(toid,"NewMsg",chat);
     }
 
 //    클라이언트 접속시 호출되는 메서드

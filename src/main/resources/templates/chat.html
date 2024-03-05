@@ -55,6 +55,7 @@ font-family: 'Noto Sans KR', sans-serif;
         websocket.onopen = onOpen;
         websocket.onclose = onClose;
 
+
         function send(){
             let msg = $("#msg").val();
             console.log(msg);
@@ -66,10 +67,12 @@ font-family: 'Noto Sans KR', sans-serif;
             // 소켓에 메시지 보냄
             websocket.send(JSON.stringify(data));
             msg.value = '';
+            $('#msg').val('');
         }
 
         //채팅창에서 나갔을 때
         function onClose(evt) {
+
             var name = $("#toName").val();
             var employid = $("#employId").val();
             var str = { toName : name, fromName : username , message : username + ": 님이 퇴장하셨습니다." ,employId : employid } ;
@@ -78,19 +81,16 @@ font-family: 'Noto Sans KR', sans-serif;
 
         // 채팅창에 들어왔을 때
         function onOpen(evt) {
-            // var employid = $("#employId").val();
-            // var name = $("#toName").val();
-            // console.log(name);
-            // var str = { toName : name, fromName : username , message : username + ": 님이 입장하셨습니다." ,employId : employid} ;
-            //
-            // websocket.send(JSON.stringify(str));
-            $(".read").text('');
+
+
+
         }
 
         // 메시지가 도착했을때
         function onMessage(msg) {
-            $(".read").text('');
-            console.log("삭제!!");
+
+
+
             var data = JSON.parse(msg.data);
             console.log(data);
             var from = data.fromName;
@@ -100,6 +100,11 @@ font-family: 'Noto Sans KR', sans-serif;
 
             var cur_session = username;
             //현재 세션에 로그인 한 사람
+
+            if(!cur_session==data.fromName){
+                $(".read").text('');
+            }
+
             console.log("cur_session:" + cur_session);
             console.log("sessionID : " + from);
             console.log("cur_session : " + cur_session);
@@ -150,7 +155,7 @@ font-family: 'Noto Sans KR', sans-serif;
 </th:block>
 
     <div class="container-fluid">
-        <div class="messenger-box">
+        <div class="messenger-box" style="background-color: #eee;">
         <div class="messenger-header">
             <label><b>채팅방</b></label>
             <th:block th:if="${type eq 'origin'}">
@@ -169,7 +174,7 @@ font-family: 'Noto Sans KR', sans-serif;
                     <div class='' style='width:200px;margin-left: 440px;display: block'>
                         <span style="font-size: 16px;" th:text="${#dates.format(chat.time, 'M/d (E) a h:mm')}"></span>
                         <div class="d-flex" style="align-items: flex-end;">
-                        <div  th:unless="${chat.readchat}"><span class="read" style="font-size: 20px; font-weight: bold; color:#ffcd39;">1</span></div>
+                        <div th:unless="${chat.readchat}"><span class="read" style="font-size: 20px; font-weight: bold; color:#ffcd39;">1</span></div>
                             <div class='alert alert-secondary'>
                             <span style="font-weight: bold" th:inline="text">[[${chat.fromName}]] : [[${chat.data}]]</span>
                             </div>
@@ -188,6 +193,7 @@ font-family: 'Noto Sans KR', sans-serif;
                 </th:block>
                 </th:block>
             </div>
+        </div>
             <div class="">
                 <div class="input-group mb-3">
                     <input type="text" id="msg" class="form-control" width="500px" aria-label="Recipient's username" aria-describedby="button-addon2">
@@ -197,9 +203,8 @@ font-family: 'Noto Sans KR', sans-serif;
                 </div>
             </div>
         </div>
-            <div>
-                <button class="btn btn-outline-primary" type="button" id="disconn">나가기</button>
-            </div>
+        <div>
+            <button class="btn btn-outline-primary" type="button" id="disconn">나가기</button>
         </div>
 
 
