@@ -38,49 +38,29 @@ public class ChatHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
         String payload = message.getPayload();
         log.info("payload ==> "+payload);
-
-
+//        클라이언트로 부터 받은 json
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(payload);
         String fromName = jsonNode.get("fromName").asText();
         String toName = jsonNode.get("toName").asText();
         String content = jsonNode.get("message").asText();
-        String employid = jsonNode.get("employId").asText();
-        log.info(fromName);
+
         User user = userRepository.findByUname(fromName);
         ChatList chatList = null;
+//        User , Owner 사용자 구분
         if(user.getType().equals("user")){
            chatList = chatListRepository.findByFromNameAndToName(toName,fromName);
         }else {
             chatList = chatListRepository.findByFromNameAndToName(fromName, toName);
         }
         Long listId = chatList.getId();
-
-        Chat chat = new Chat();
-        chat.setChatListId(listId);
-        chat.setToName(toName);
-        chat.setFromName(fromName);
-        chat.setData(content);
-        chat.setReadchat(false);
-        chat.setTime(new Timestamp(System.currentTimeMillis()));
+//    Chat 데이터 DB 저장
+        Chat chat = new Chat(toName,fromName,content,new Timestamp(System.currentTimeMillis()),listId,false);
         chatRepository.save(chat);
-
-
-
         for (WebSocketSession sess : list){
             sess.sendMessage(message);
             log.info(" 리스트 출력 ==> "+sess.getPrincipal().getName());
         }
-//        for (WebSocketSession sess : list){
-//            ObjectMapper mapper = new ObjectMapper();
-//            ObjectNode node = mapper.createObjectNode();
-//            node.put("fromName", fromName);
-//            node.put("toName", toName);
-//            node.put("message", message.getPayload());
-//            node.put("isRecipientOnline", userStatusMap.getOrDefault(toName, false));
-//            sess.sendMessage(new TextMessage(node.toString()));
-//            log.info("리스트 출력 ==> " + sess.getPrincipal().getName());
-//        }
         User touser = userRepository.findByUname(toName);
         String toid = touser.getUserid();
         notificationService.sendEvent(toid,"NewMsg",chat);

@@ -65,7 +65,6 @@ public class ResumeService {
 //            3. 카운트수를 dto에 담는다.
             dto.setCount(count);
 //            4. 하나의 resume 탐색후 초기화
-
             resumeList.clear();
         }
 

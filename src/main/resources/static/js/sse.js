@@ -1,3 +1,4 @@
+
 window.onload = function (){
     const userid = $('input[name="userid"]').val();
     const eventSource = new EventSource("/connect/"+userid);
